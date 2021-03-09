@@ -28,7 +28,7 @@ share/python-wheels/
 MANIFEST
 
 # Vagrant
-# .vagrant
+.vagrant
 
 # VS Code
 .vscode/
