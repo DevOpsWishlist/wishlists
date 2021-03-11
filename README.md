@@ -21,3 +21,13 @@ update_items  PUT      /wishlists/<wishlist_id>/items/<item_id>
 delete_items  DELETE   /wishlists/<wishlist_id>/items/<item_id>
 ```
 
+vagrant up
+vagrant ssh
+cd /vagrant/
+
+FLASK_APP=service:app flask run -h 0.0.0.0
+
+nosetests
+
+exit
+vagrant halt
