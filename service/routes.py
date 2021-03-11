@@ -34,7 +34,7 @@ def index():
 ######################################################################
 @app.route("/wishlists", methods=["GET"])
 def list_wishlists():
-    """ Returns all of the Pets """
+    """ Returns all of the Wishlists """
     app.logger.info("Request for wishlists")
     wishlists = WishList.all()
     results = [wishlist.serialize() for wishlist in wishlists]
@@ -44,6 +44,16 @@ def list_wishlists():
     	'count': len(results)
     }
     return make_response(jsonify(response_body), status.HTTP_200_OK)
+
+
+######################################################################
+# CREATE A WishList
+######################################################################
+@app.route("/wishlists", methods=["POST"])
+def create_wishlists():
+    """ Creates a wishlist  """
+
+
 
 
 ######################################################################
