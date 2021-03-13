@@ -196,21 +196,22 @@ class WishList(db.Model, CommonModel):
         db.session.delete(self)
         db.session.commit()
 
-    # def deserialize(self, data):
-    #     """
-    #     Deserializes a WishList from a dictionary
+    def deserialize(self, data):
+        """
+        Deserializes a WishList from a dictionary
 
-    #     Args:
-    #         data (dict): A dictionary containing the resource data
-    #     """
-    #     try:
-    #         self.name = data["name"]
-    #     except KeyError as error:
-    #         raise DataValidationError(
-    #             "Invalid WishList: missing " + error.args[0]
-    #         )
-    #     except TypeError as error:
-    #         raise DataValidationError(
-    #             "Invalid WishList: body of request contained bad or no data"
-    #         )
-    #     return self
+        Args:
+            data (dict): A dictionary containing the resource data
+        """
+        try:
+            self.name = data["name"]
+            self.category = data["category"]
+        except KeyError as error:
+            raise DataValidationError(
+                "Invalid WishList: missing " + error.args[0]
+            )
+        except TypeError as error:
+            raise DataValidationError(
+                "Invalid WishList: body of request contained bad or no data"
+            )
+        return self
