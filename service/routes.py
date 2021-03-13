@@ -47,6 +47,29 @@ def list_wishlists():
 
 
 ######################################################################
+# CREATE/ADD A WISHLIST
+######################################################################
+@app.route("/wishlists", methods=["POST"]) #not sure about the method yet 
+def create_wishlists():
+    """
+    Creates a wishlist
+    This endpoint will create a wishlist based the data in the body that is posted
+    """
+    app.logger.info("Request to create a wishlist")
+    check_content_type("application/json")
+    wishlists = WishList() 
+    wishlists.deserialize(request.get_json())
+    wishlists.create()
+    message = wishlists.serialize()
+    location_url = url_for("get_wishlists", wishlists_id=wishlists.id, _external=True) 
+
+    app.logger.info("Wishlist with ID [%s] created.", pet.id)
+    return make_response(
+        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+    )
+
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
