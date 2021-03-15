@@ -34,7 +34,7 @@ def index():
 ######################################################################
 @app.route("/wishlists", methods=["GET"])
 def list_wishlists():
-    """ Returns all of the Pets """
+    """ Returns all of the Wishlists """
     app.logger.info("Request for wishlists")
     wishlists = WishList.all()
     results = [wishlist.serialize() for wishlist in wishlists]
@@ -44,6 +44,34 @@ def list_wishlists():
     	'count': len(results)
     }
     return make_response(jsonify(response_body), status.HTTP_200_OK)
+
+
+######################################################################
+# CREATE A WishList
+######################################################################
+@app.route("/wishlists", methods=["POST"])
+def create_wishlists():
+    """ Creates a wishlist  """
+
+
+######################################################################
+# UPDATE AN EXISTING Wishlist
+######################################################################
+@app.route("/wishlists/<int:wishlist_id>", methods=["PUT"])
+def update_wishlists(wishlist_id):
+    """
+    Update a Wishlist
+    This endpoint will update a Wishlist based the body that is posted
+    """
+    app.logger.info("Request to update wishlist with id: %s", wishlist_id)
+    check_content_type("application/json")
+    wishlist = Wishlist.find(wishlist_id)
+    if not wishlist:
+        raise NotFound("Wishlist with id '{}' was not found.".format(wishlist_id))
+    wishlist.deserialize(request.get_json())
+    wishlist.id = wishlist_id
+    wishlist.save()
+    return make_response(jsonify(wishlist.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
