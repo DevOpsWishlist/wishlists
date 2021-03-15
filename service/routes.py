@@ -73,7 +73,6 @@ def update_wishlists(wishlist_id):
     wishlist.save()
     return make_response(jsonify(wishlist.serialize()), status.HTTP_200_OK)
 
-
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
