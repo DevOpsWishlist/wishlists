@@ -47,14 +47,6 @@ def list_wishlists():
 
 
 ######################################################################
-# CREATE A WishList
-######################################################################
-@app.route("/wishlists", methods=["POST"])
-def create_wishlists():
-    """ Creates a wishlist  """
-
-
-######################################################################
 # UPDATE AN EXISTING Wishlist
 ######################################################################
 @app.route("/wishlists/<int:wishlist_id>", methods=["PUT"])
@@ -72,7 +64,13 @@ def update_wishlists(wishlist_id):
     wishlist.id = wishlist_id
     wishlist.save()
     return make_response(jsonify(wishlist.serialize()), status.HTTP_200_OK)
-
+    
+######################################################################
+# CREATE A WishList
+######################################################################
+@app.route("/wishlists", methods=["POST"])
+def create_wishlists():
+    """ Creates a wishlist  """
     
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
