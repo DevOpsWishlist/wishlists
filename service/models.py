@@ -46,6 +46,9 @@ class CommonModel():
         logger.info("Deleting %s", self.name)
         db.session.delete(self)
         db.session.commit()
+##################################################
+# CLASS METHODS
+##################################################
 
     @classmethod
     def init_db(cls, app):
