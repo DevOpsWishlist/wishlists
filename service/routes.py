@@ -66,7 +66,23 @@ def create_wishlists():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
+######################################################################
+# DELETE A Wishlist
+######################################################################
+@app.route("/wishlist/<int:wishlist_id>", methods=["DELETE"])
+def delete_wishlists(wishlist_id):
+    """
+    Delete a Wishlist
 
+    This endpoint will delete a wishlist based the id specified in the path
+    """
+    # app.logger.info("Request to delete wish with id: %s", pet_id)
+    # pet = Pet.find(pet_id)
+    # if pet:
+    #     pet.delete()
+
+    # app.logger.info("Pet with ID [%s] delete complete.", pet_id)
+    # return make_response("", status.HTTP_204_NO_CONTENT)
 
 
 ######################################################################
