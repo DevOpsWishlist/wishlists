@@ -69,20 +69,21 @@ def create_wishlists():
 ######################################################################
 # DELETE A Wishlist
 ######################################################################
-@app.route("/wishlist/<int:wishlist_id>", methods=["DELETE"])
+@app.route("/wishlists/<int:wishlist_id>", methods=["DELETE"])
 def delete_wishlists(wishlist_id):
+    print('heyyyyy')
     """
     Delete a Wishlist
 
     This endpoint will delete a wishlist based the id specified in the path
     """
-    # app.logger.info("Request to delete wish with id: %s", pet_id)
-    # pet = Pet.find(pet_id)
-    # if pet:
-    #     pet.delete()
+    app.logger.info(f'Request to delete wishlist with id: {wishlist_id}')
+    wishlist = WishList.find(wishlist_id)
+    if wishlist:
+        wishlist.delete()
 
-    # app.logger.info("Pet with ID [%s] delete complete.", pet_id)
-    # return make_response("", status.HTTP_204_NO_CONTENT)
+    app.logger.info(f'Wishlist with ID [{wishlist_id}] delete complete.')
+    return make_response("ITS GONE!", status.HTTP_204_NO_CONTENT)
 
 
 ######################################################################
