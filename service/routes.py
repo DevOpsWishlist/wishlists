@@ -71,7 +71,6 @@ def create_wishlists():
 ######################################################################
 @app.route("/wishlists/<int:wishlist_id>", methods=["DELETE"])
 def delete_wishlists(wishlist_id):
-    print('heyyyyy')
     """
     Delete a Wishlist
 
