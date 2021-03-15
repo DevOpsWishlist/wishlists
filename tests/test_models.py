@@ -6,6 +6,7 @@ import logging
 import unittest
 import os
 from service.models import WishList, Item, DataValidationError, db
+from service.routes import app
 
 DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb")
 
@@ -44,11 +45,5 @@ class TestWishList(unittest.TestCase):
     #  T E S T   C A S E S
     ######################################################################
 
-    def test_create(self):
-        """ Test something """
-        item = Item(id = 1, name ="Shoe", price=10)
-        self.assertTrue(item != None)
-        self.assertEqual(item.id, 1)
-        self.assertEqual(item.name, "Shoe")
-        self.assertEqual(item.category, 10)
+    
           

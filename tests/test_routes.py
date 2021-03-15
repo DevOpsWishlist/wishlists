@@ -10,7 +10,7 @@ import logging
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from flask_api import status  # HTTP Status Codes
-from service.models import db, WishList #import wishlist object
+from service.models import db, WishList, Item #import wishlist object
 from service.routes import app, init_db
 
 DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb")
@@ -49,12 +49,17 @@ class TestWishListServer(TestCase):
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################
 
-    def test_index(self):
-        """ Test index call """
-        resp = self.app.get("/")
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(data["name"], "UNKNONWN")
+    def test_create_item(self):
+        """ Create Item Test """
+        item = Item(id = 1, name ="Shoe", price=10, wishlist_id = 10)
+        self.assertTrue(item != None)
+        self.assertEqual(item.id, 1)
+        self.assertEqual(item.name, "Shoe")
+        self.assertEqual(item.price, 10)
+        self.assertEqual(item.wishlist_id, 10)
+        self.assertTrue(item.wishlist_id != 2)
+        #created_time DateTime ?
+        #modified_time DateTime ?
 
     def test_create_a_wishlist(self):
         """ Create a wishlist and assert that it exists """
