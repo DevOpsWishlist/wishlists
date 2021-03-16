@@ -38,7 +38,7 @@ class TestWishListServer(TestCase):
         """ This runs before each test """
         db.drop_all()  # clean up the last tests
         db.create_all()  # make our sqlalchemy tables
-      #  self.app = app.test_client() #not sure the purpose of this 
+        self.app = app.test_client() #not sure the purpose of this 
 
     def tearDown(self):
         """ This runs after each test """
@@ -74,15 +74,25 @@ class TestWishListServer(TestCase):
         self.assertEqual(wishlist.category, "Clothes")
         #self.assertEqual(wishlist.available, True)
 
-    def test_get_wishlist_items(self):
-        """ Get Items of Specific Wishlist """
-        wishlist = WishList(id=10, name="My List", category="Clothes")
-        item_1 = Item(id = 1, name = "Shoe", price=20, wishlist_id = 10)
-        item_2 = Item(id = 4, name = "Shoe", price=45, wishlist_id = 10)
-        item_3 = Item(id = 6, name = "Shoe", price=19, wishlist_id = 10)
+    # def test_get_wishlist_items(self):
+    #     """ Get Items of Specific Wishlist """
+    #     wishlist = WishList(id=10, name="My List", category="Clothes")
+    #     item_1 = Item(id = 1, name = "Shoe", price=20, wishlist_id = 10)
+    #     item_2 = Item(id = 4, name = "Shoe", price=45, wishlist_id = 10)
+    #     item_3 = Item(id = 6, name = "Shoe", price=19, wishlist_id = 10)
 
 
-        #self.get_items(10) 
-
-        #wishlist.get_items()
+        
+    def test_get_wishlist_list(self):
+        """ Get a list of wishlists """
+        wishlist = WishList(id=1, name="My List", category="Clothes")
+        wishlist.create() 
+        wishlist = WishList(id=2, name="Your List", category="Clothes")
+        wishlist.create() 
+        resp = self.app.get("/wishlists")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 2)
+        
+    
 
