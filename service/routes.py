@@ -30,22 +30,21 @@ def index():
 	)
 
 ######################################################################
-# RETRIEVE An item (wish)
+# RETRIEVE a list of items (wishes)
 ######################################################################
-@app.route("/items/<int:item_id>", methods=["GET"])
-def get_items(item_id):
-    """
-    Retrieve a single item
-
-    This endpoint will return a item based on it's id
-    """
-    app.logger.info("Request for item with id: %s", item_id)
-    item = Item.find(item_id)
-    if not item:
-        raise NotFound("Item with id '{}' was not found.".format(item_id))
-
-    app.logger.info("Returning item: %s", item.name)
-    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
+@app.route("/wishlists/<int:wishlist_id>/items", methods=["GET"])
+def get_items(wishlist_id):
+    
+    """ Returns all of the items in a wishlist """
+    app.logger.info("Request for items in wishlist")
+    wishlist = WishList.find(wishlist_id)
+    results = [item for item in wishlist.items] 
+    app.logger.info(f'Returning {len(results)} items')
+    response_body = {
+    	'data': results,
+    	'count': len(results)
+    }
+    return make_response(jsonify(response_body), status.HTTP_200_OK)
 
 ######################################################################
 # LIST ALL WishLists
