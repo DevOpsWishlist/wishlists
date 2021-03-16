@@ -99,51 +99,31 @@ class Item(db.Model, CommonModel):
         return {
             "id": self.id,
             "name": self.name,
-            "price": self.category,
+            "price": self.price,
             "modified_time": self.modified_time,
             "wishlist_id": self.wishlist_id
         }
 
-    def create(self):
+    def deserialize(self, data):
         """
-        Creates a Item to the database
+        Deserializes a Item from a dictionary
+
+        Args:
+            data (dict): A dictionary containing the resource data
         """
-        logger.info("Creating %s", self.name)
-        self.id = None  # id must be none to generate next primary key
-        db.session.add(self)
-        db.session.commit()
-
-    def save(self):
-        """
-        Updates a Item to the database
-        """
-        logger.info("Saving %s", self.name)
-        db.session.commit()
-
-    def delete(self):
-        """ Removes a Item from the data store """
-        logger.info("Deleting %s", self.name)
-        db.session.delete(self)
-        db.session.commit()
-
-    # def deserialize(self, data):
-    #     """
-    #     Deserializes a Item from a dictionary
-
-    #     Args:
-    #         data (dict): A dictionary containing the resource data
-    #     """
-    #     try:
-    #         self.name = data["name"]
-    #     except KeyError as error:
-    #         raise DataValidationError(
-    #             "Invalid Item: missing " + error.args[0]
-    #         )
-    #     except TypeError as error:
-    #         raise DataValidationError(
-    #             "Invalid Item: body of request contained bad or no data"
-    #         )
-    #     return self
+        try:
+            self.name = data["name"]
+            self.price = data["price"]
+            self.wishlist_id = data["wishlist_id"]
+        except KeyError as error:
+            raise DataValidationError(
+                "Invalid Item: missing " + error.args[0]
+            )
+        except TypeError as error:
+            raise DataValidationError(
+                "Invalid Item: body of request contained bad or no data"
+            )
+        return self
 
 
 
@@ -173,28 +153,6 @@ class WishList(db.Model, CommonModel):
             "category": self.category,
             "modified_time": self.modified_time,
         }
-
-    def create(self):
-        """
-        Creates a WishList to the database
-        """
-        logger.info("Creating %s", self.name)
-        self.id = None  # id must be none to generate next primary key
-        db.session.add(self)
-        db.session.commit()
-
-    def save(self):
-        """
-        Updates a WishList to the database
-        """
-        logger.info("Saving %s", self.name)
-        db.session.commit()
-
-    def delete(self):
-        """ Removes a WishList from the data store """
-        logger.info("Deleting %s", self.name)
-        db.session.delete(self)
-        db.session.commit()
 
     def deserialize(self, data):
         """

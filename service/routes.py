@@ -13,7 +13,7 @@ from flask_api import status  # HTTP Status Codes
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from flask_sqlalchemy import SQLAlchemy
-from service.models import WishList, DataValidationError
+from service.models import WishList, Item, DataValidationError
 
 # Import Flask application
 from . import app
@@ -25,7 +25,7 @@ from . import app
 def index():
     """ Root URL response """
     return (
-        "Bullshit",
+        "Hello World!",
         status.HTTP_200_OK,
 	)
 
@@ -82,6 +82,25 @@ def delete_wishlists(wishlist_id):
         wishlist.delete()
 
     app.logger.info(f'Wishlist with ID [{wishlist_id}] delete complete.')
+    return make_response("ITS GONE!", status.HTTP_204_NO_CONTENT)
+
+
+######################################################################
+# DELETE A Item
+######################################################################
+@app.route("/wishlists/<int:wishlist_id>/items/<int:item_id>", methods=["DELETE"])
+def delete_items(wishlist_id, item_id):
+    """
+    Delete a Item
+
+    This endpoint will delete a item based the id specified in the path
+    """
+    app.logger.info(f'Request to delete item with id: {item_id}')
+    item = Item.find(item_id)
+    if item:
+        item.delete()
+
+    app.logger.info(f'Item with ID [{item_id}] delete complete.')
     return make_response("ITS GONE!", status.HTTP_204_NO_CONTENT)
 
 
