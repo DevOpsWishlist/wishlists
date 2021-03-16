@@ -1,287 +1,250 @@
-"""
-Test cases for Model
-"""
-import logging
 import unittest
 import os
-from service import app
 from service.models import WishList, Item, DataValidationError, db
-from tests.factories import WishListFactory, ItemFactory
+from service.routes import app, init_db
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
 )
 
 ######################################################################
-#  Account   M O D E L   T E S T   C A S E S
+#  T E S T   C A S E S
 ######################################################################
-# class TestAccount(unittest.TestCase):
-#     """ Test Cases for Account Model """
+class TestWishLists(unittest.TestCase):
+    """ Test Cases for WishLists """
 
-#     @classmethod
-#     def setUpClass(cls):
-#         """ This runs once before the entire test suite """
-#         app.config['TESTING'] = True
-#         app.config['DEBUG'] = False
-#         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
-#         app.logger.setLevel(logging.CRITICAL)
-#         Account.init_db(app)
+    @classmethod
+    def setUpClass(cls):
+        """ Run once before all tests """
+        app.config['TESTING'] = True
+        app.config['DEBUG'] = False
+        app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
+        init_db()
 
-#     @classmethod
-#     def tearDownClass(cls):
-#         """ This runs once after the entire test suite """
-#         pass
+    @classmethod
+    def tearDownClass(cls):
+        """ Runs once before test suite """
+        pass
 
-#     def setUp(self):
-#         """ This runs before each test """
-#         db.drop_all()  # clean up the last tests
-#         db.create_all()  # make our sqlalchemy tables
+    def setUp(self):
+        """ Runs before each test """
+        db.drop_all()  # clean up the last tests
+        db.create_all()  # create new tables
+        self.app = app.test_client()
 
-#     def tearDown(self):
-#         """ This runs after each test """
-#         db.session.remove()
-#         db.drop_all()
+    def tearDown(self):
+        """ Runs once after each test case """
+        db.session.remove()
+        db.drop_all()
 
-# ######################################################################
-# #  H E L P E R   M E T H O D S
-# ######################################################################
-
-#     def _create_account(self, addresses=[]):
-#         """ Creates an account from a Factory """
-#         fake_account = AccountFactory()
-#         account = Account(
-#             name=fake_account.name, 
-#             email=fake_account.email, 
-#             phone_number=fake_account.phone_number, 
-#             date_joined=fake_account.date_joined,
-#             addresses=addresses
-#         )
-#         self.assertTrue(account != None)
-#         self.assertEqual(account.id, None)
-#         return account
-
-#     def _create_address(self):
-#         """ Creates fake addresses from factory """
-#         fake_address = AddressFactory()
-#         address = Address(
-#             name=fake_address.name,
-#             street=fake_address.street,
-#             city=fake_address.city,
-#             state=fake_address.state,
-#             postalcode=fake_address.postalcode
-#         )
-#         self.assertTrue(address != None)
-#         self.assertEqual(address.id, None)
-#         return address
-
-# ######################################################################
-# #  T E S T   C A S E S
-# ######################################################################
-
-#     def test_create_an_account(self):
-#         """ Create a Account and assert that it exists """
-#         fake_account = AccountFactory()
-#         account = Account(
-#             name=fake_account.name, 
-#             email=fake_account.email, 
-#             phone_number=fake_account.phone_number, 
-#             date_joined=fake_account.date_joined 
-#         )
-#         self.assertTrue(account != None)
-#         self.assertEqual(account.id, None)
-#         self.assertEqual(account.name, fake_account.name)
-#         self.assertEqual(account.email, fake_account.email)
-#         self.assertEqual(account.phone_number, fake_account.phone_number)
-#         self.assertEqual(account.date_joined, fake_account.date_joined)
-
-#     def test_add_a_account(self):
-#         """ Create an account and add it to the database """
-#         accounts = Account.all()
-#         self.assertEqual(accounts, [])
-#         account = self._create_account()
-#         account.create()
-#         # Assert that it was assigned an id and shows up in the database
-#         self.assertEqual(account.id, 1)
-#         accounts = Account.all()
-#         self.assertEqual(len(accounts), 1)
+    def test_create_a_wishlist(self):
+        """ Create a wishlist and assert that it exists """
+        wl = WishList(name="wishlist1", category="cat1")
+        self.assertTrue(wl != None)
+        self.assertEqual(wl.id, None)
+        self.assertEqual(wl.name, "wishlist1")
+        self.assertEqual(wl.category, "cat1")
 
 
-#     def test_update_account(self):
-#         """ Update an account """
-#         account = self._create_account()
-#         account.create()
-#         # Assert that it was assigned an id and shows up in the database
-#         self.assertEqual(account.id, 1)
+    def test_add_a_wishlist(self):
+        """ Create a wishlist and add it to the database """
+        wls = WishList.all()
+        self.assertEqual(wls, [])
+        wl = WishList(name="wishlist1", category="cat1")
+        self.assertTrue(wl != None)
+        self.assertEqual(wl.id, None)
+        wl.create()
+        # Asert that it was assigned an id and shows up in the database
+        self.assertEqual(wl.id, 1)
+        wls = WishList.all()
+        self.assertEqual(len(wls), 1)
 
-#         # Fetch it back
-#         account = Account.find(account.id)
-#         account.email = "XXX@YYY.COM"
-#         account.save()
+    def test_update_a_wishlist(self):
+        """ Update a WishList """
+        wl = WishList(name="wishlist1", category="cat1")
+        wl.create()
+        self.assertEqual(wl.id, 1)
+        # Change it an update it
+        wl.category = "hot"
+        wl.save()
+        self.assertEqual(wl.id, 1)
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        wls = WishList.all()
+        self.assertEqual(len(wls), 1)
+        self.assertEqual(wls[0].category, "hot")
 
-#         # Fetch it back again
-#         account = Account.find(account.id)
-#         self.assertEqual(account.email, "XXX@YYY.COM")
+    def test_delete_a_wishlist(self):
+        """ Delete a WishList """
+        wl = WishList(name="wishlist1", category="cat1")
+        wl.create()
+        self.assertEqual(len(WishList.all()), 1)
+        # delete the wishlist and make sure it isn't in the database
+        wl.delete()
+        self.assertEqual(len(WishList.all()), 0)
+
+    def test_serialize_a_wishlist(self):
+        """ Test serialization of a WishList """
+        wl = WishList(name="wishlist1", category="cat1")
+        data = wl.serialize()
+        self.assertNotEqual(data, None)
+        self.assertIn("id", data)
+        self.assertEqual(data["id"], None)
+        self.assertIn("name", data)
+        self.assertEqual(data["name"], "wishlist1")
+        self.assertIn("category", data)
+        self.assertEqual(data["category"], "cat1")
+
+    def test_deserialize_a_wishlist(self):
+        """ Test deserialization of a WishList """
+        data = {"id": 1, "name": "wishlist1", "category": "cat1"}
+        wl = WishList()
+        wl.deserialize(data)
+        self.assertNotEqual(wl, None)
+        self.assertEqual(wl.id, None)
+        self.assertEqual(wl.name, "wishlist1")
+        self.assertEqual(wl.category, "cat1")
+
+    def test_deserialize_bad_data(self):
+        """ Test deserialization of bad data """
+        data = "this is not a dictionary"
+        wl = WishList()
+        self.assertRaises(DataValidationError, wl.deserialize, data)
+
+    def test_find_wishlist(self):
+        """ Find a WishList by ID """
+        wl = WishList(name="wishlist1", category="cat1")
+        wl.create()
+        foundwish = WishList.find(wl.id)
+        self.assertIsNot(foundwish, None)
+        self.assertEqual(foundwish.id, wl.id)
+        self.assertEqual(foundwish.name, "wishlist1")
 
 
-#     def test_delete_an_account(self):
-#         """ Delete an account from the database """
-#         accounts = Account.all()
-#         self.assertEqual(accounts, [])
-#         account = self._create_account()
-#         account.create()
-#         # Assert that it was assigned an id and shows up in the database
-#         self.assertEqual(account.id, 1)
-#         accounts = Account.all()
-#         self.assertEqual(len(accounts), 1)
-#         account = accounts[0]
-#         account.delete()
-#         accounts = Account.all()
-#         self.assertEqual(len(accounts), 0)
 
-#     def test_find_or_404(self):
-#         """ Find or throw 404 error """
-#         account = self._create_account()
-#         account.create()
-#         # Assert that it was assigned an id and shows up in the database
-#         self.assertEqual(account.id, 1)
 
-#         # Fetch it back
-#         account = Account.find_or_404(account.id)
-#         self.assertEqual(account.id, 1)
+class TestItems(unittest.TestCase):
+    """ Test Cases for Items """
 
-#     def test_find_by_name(self):
-#         """ Find by name """
-#         account = self._create_account()
-#         account.create()
+    @classmethod
+    def setUpClass(cls):
+        """ Run once before all tests """
+        app.config['TESTING'] = True
+        app.config['DEBUG'] = False
+        app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
+        init_db()
 
-#         # Fetch it back by name
-#         same_account = Account.find_by_name(account.name)[0]
-#         self.assertEqual(same_account.id, account.id)
-#         self.assertEqual(same_account.name, account.name)
+    @classmethod
+    def tearDownClass(cls):
+        """ Runs once before test suite """
+        pass
 
-#     def test_serialize_an_account(self):
-#         """ Serialize an account """
-#         address = self._create_address()
-#         account = self._create_account(addresses=[address])
-#         serial_account = account.serialize()
-#         self.assertEqual(serial_account['id'], account.id)
-#         self.assertEqual(serial_account['name'], account.name)
-#         self.assertEqual(serial_account['email'], account.email)
-#         self.assertEqual(serial_account['phone_number'], account.phone_number)
-#         self.assertEqual(serial_account['date_joined'], str(account.date_joined))
-#         self.assertEqual(len(serial_account['addresses']), 1)
-#         addresses = serial_account['addresses']
-#         self.assertEqual(addresses[0]['id'], address.id)
-#         self.assertEqual(addresses[0]['account_id'], address.account_id)
-#         self.assertEqual(addresses[0]['name'], address.name)
-#         self.assertEqual(addresses[0]['street'], address.street)
-#         self.assertEqual(addresses[0]['city'], address.city)
-#         self.assertEqual(addresses[0]['state'], address.state)
-#         self.assertEqual(addresses[0]['postalcode'], address.postalcode)
+    def setUp(self):
+        """ Runs before each test """
+        db.drop_all()  # clean up the last tests
+        db.create_all()  # create new tables
+        self.app = app.test_client()
 
-#     def test_deserialize_an_account(self):
-#         """ Deserialize an account """
-#         address = self._create_address()
-#         account = self._create_account(addresses=[address])
-#         serial_account = account.serialize()
-#         new_account = Account()
-#         new_account.deserialize(serial_account)
-#         self.assertEqual(new_account.id, account.id)
-#         self.assertEqual(new_account.name, account.name)
-#         self.assertEqual(new_account.email, account.email)
-#         self.assertEqual(new_account.phone_number, account.phone_number)
-#         self.assertEqual(new_account.date_joined, account.date_joined)
+    def tearDown(self):
+        """ Runs once after each test case """
+        db.session.remove()
+        db.drop_all()
 
-#     def test_deserialize_with_key_error(self):
-#         """ Deserialize an account with a KeyError """
-#         account = Account()
-#         self.assertRaises(DataValidationError, account.deserialize, {})
+    def test_create_a_item(self):
+        """ Create a item and assert that it exists """
+        item = Item(name="item1", price=88, wishlist_id=1)
+        self.assertTrue(item != None)
+        self.assertEqual(item.id, None)
+        self.assertEqual(item.name, "item1")
+        self.assertEqual(item.price, 88)
 
-#     def test_deserialize_with_type_error(self):
-#         """ Deserialize an account with a TypeError """
-#         account = Account()
-#         self.assertRaises(DataValidationError, account.deserialize, [])
 
-#     def test_deserialize_address_key_error(self):
-#         """ Deserialize an address with a KeyError """
-#         address = Address()
-#         self.assertRaises(DataValidationError, address.deserialize, {})
+    def test_add_a_item(self):
+        """ Create a item and add it to the database """
+        items = Item.all()
+        self.assertEqual(items, [])
+        wl = WishList(name="wishlist1", category="cat1")
+        item = Item(name="item1", price=88, wishlist_id=1)
+        self.assertTrue(item != None)
+        self.assertEqual(item.id, None)
+        wl.create()
+        item.create()
+        # Asert that it was assigned an id and shows up in the database
+        self.assertEqual(item.id, 1)
+        items = Item.all()
+        self.assertEqual(len(items), 1)
 
-#     def test_deserialize_address_type_error(self):
-#         """ Deserialize an address with a TypeError """
-#         address = Address()
-#         self.assertRaises(DataValidationError, address.deserialize, [])
+    def test_update_a_item(self):
+        """ Update a Item """
+        wl = WishList(name="wishlist1", category="cat1")
+        item = Item(name="item1", price=88, wishlist_id=1)
+        wl.create()
+        item.create()
+        self.assertEqual(item.id, 1)
+        # Change it an update it
+        item.price = 10
+        item.save()
+        self.assertEqual(item.id, 1)
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        items = Item.all()
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0].price, 10)
 
-#     def test_add_account_address(self):
-#         """ Create an account with an address and add it to the database """
-#         accounts = Account.all()
-#         self.assertEqual(accounts, [])
-#         account = self._create_account()
-#         address = self._create_address()
-#         account.addresses.append(address)
-#         account.create()
-#         # Assert that it was assigned an id and shows up in the database
-#         self.assertEqual(account.id, 1)
-#         accounts = Account.all()
-#         self.assertEqual(len(accounts), 1)
+    def test_delete_a_item(self):
+        """ Delete a Item """
+        wl = WishList(name="wishlist1", category="cat1")
+        item = Item(name="item1", price=88, wishlist_id=1)
+        wl.create()
+        item.create()
+        self.assertEqual(len(Item.all()), 1)
+        # delete the wishlist and make sure it isn't in the database
+        item.delete()
+        self.assertEqual(len(Item.all()), 0)
 
-#         new_account = Account.find(account.id)
-#         self.assertEqual(account.addresses[0].name, address.name)
+    def test_serialize_a_item(self):
+        """ Test serialization of a Item """
+        item = Item(name="item1", price=88, wishlist_id=1)
+        data = item.serialize()
+        self.assertNotEqual(data, None)
+        self.assertIn("id", data)
+        self.assertEqual(data["id"], None)
+        self.assertIn("name", data)
+        self.assertEqual(data["name"], "item1")
+        self.assertIn("price", data)
+        self.assertEqual(data["price"], 88)
 
-#         address2 = self._create_address()
-#         account.addresses.append(address2)
-#         account.save()
+    def test_deserialize_a_item(self):
+        """ Test deserialization of a Item """
+        data = {"id": 1, "name": "item1", "price": 88, "wishlist_id": 1}
+        item = Item()
+        item.deserialize(data)
+        self.assertNotEqual(item, None)
+        self.assertEqual(item.id, None)
+        self.assertEqual(item.name, "item1")
+        self.assertEqual(item.price, 88)
+        self.assertEqual(item.wishlist_id, 1)
 
-#         new_account = Account.find(account.id)
-#         self.assertEqual(len(account.addresses), 2)
-#         self.assertEqual(account.addresses[1].name, address2.name)
+    def test_deserialize_bad_data(self):
+        """ Test deserialization of bad data """
+        data = "this is not a dictionary"
+        item = Item()
+        self.assertRaises(DataValidationError, item.deserialize, data)
 
-#     def test_update_account_address(self):
-#         """ Update an accounts address """
-#         accounts = Account.all()
-#         self.assertEqual(accounts, [])
+    def test_find_item(self):
+        """ Find a Item by ID """
+        wl = WishList(name="wishlist1", category="cat1")
+        item = Item(name="item1", price=88, wishlist_id=1)
+        wl.create()
+        item.create()
+        found_item = Item.find(item.id)
+        self.assertIsNot(found_item, None)
+        self.assertEqual(found_item.id, item.id)
+        self.assertEqual(found_item.name, "item1")
 
-#         address = self._create_address()
-#         account = self._create_account(addresses=[address])
-#         account.create()
-#         # Assert that it was assigned an id and shows up in the database
-#         self.assertEqual(account.id, 1)
-#         accounts = Account.all()
-#         self.assertEqual(len(accounts), 1)
 
-#         # Fetch it back
-#         account = Account.find(account.id)
-#         old_address = account.addresses[0]
-#         self.assertEqual(old_address.city, address.city)
-
-#         old_address.city = "XX"
-#         account.save()
-
-#         # Fetch it back again
-#         account = Account.find(account.id)
-#         address = account.addresses[0]
-#         self.assertEqual(address.city, "XX")
-
-#     def test_delete_account_address(self):
-#         """ Delete an accounts address """
-#         accounts = Account.all()
-#         self.assertEqual(accounts, [])
-
-#         address = self._create_address()
-#         account = self._create_account(addresses=[address])
-#         account.create()
-#         # Assert that it was assigned an id and shows up in the database
-#         self.assertEqual(account.id, 1)
-#         accounts = Account.all()
-#         self.assertEqual(len(accounts), 1)
-
-#         # Fetch it back
-#         account = Account.find(account.id)
-#         address = account.addresses[0]
-#         address.delete()
-#         account.save()
-
-#         # Fetch it back again
-#         account = Account.find(account.id)
-#         self.assertEqual(len(account.addresses), 0)
-
+######################################################################
+#   M A I N
+######################################################################
+if __name__ == "__main__":
+    unittest.main()

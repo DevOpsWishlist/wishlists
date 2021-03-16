@@ -23,7 +23,7 @@ DATABASE_URI = os.getenv(
 #  T E S T   C A S E S
 ######################################################################
 class TestYourResourceServer(TestCase):
-    """ <your resource name> Server Tests """
+    """ WishLists and Items Server Tests """
 
     @classmethod
     def setUpClass(cls):
@@ -54,21 +54,11 @@ class TestYourResourceServer(TestCase):
 #  H E L P E R   M E T H O D S
 ######################################################################
 
-    # def _create_accounts(self, count):
-    #     """ Factory method to create accounts in bulk """
-    #     accounts = []
-    #     for _ in range(count):
-    #         account = AccountFactory()
-    #         resp = self.app.post(
-    #             "/accounts", json=account.serialize(), content_type="application/json"
-    #         )
-    #         self.assertEqual(
-    #             resp.status_code, status.HTTP_201_CREATED, "Could not create test Account"
-    #         )
-    #         new_account = resp.get_json()
-    #         account.id = new_account["id"]
-    #         accounts.append(account)
-    #     return accounts
+    def _create_wishlists(self, count):
+        """ Factory method to create wishlists in bulk """
+        for x in range(count):
+            wl = WishList(name=f'wishlist{x}', category=f'cat{x}')
+            wl.create()
 
 ######################################################################
 #  WISHLIST  T E S T   C A S E S
@@ -79,21 +69,13 @@ class TestYourResourceServer(TestCase):
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
-    # def test_get_account_list(self):
-    #     """ Get a list of Accounts """
-    #     self._create_accounts(5)
-    #     resp = self.app.get("/accounts")
+    # def test_get_wishlist_list(self):
+    #     """ Get a list of WishLists """
+    #     self._create_wishlists(5)
+    #     resp = self.app.get("/wishlists")
     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
     #     data = resp.get_json()
-    #     self.assertEqual(len(data), 5)
-
-    # def test_get_account_by_name(self):
-    #     """ Get a Account by Name """
-    #     accounts = self._create_accounts(3)
-    #     resp = self.app.get("/accounts?name={}".format(accounts[1].name))
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(data[0]["name"], accounts[1].name)
+    #     self.assertEqual(len(data['data']), 5)
 
     # def test_get_account(self):
     #     """ Get a single Account """
@@ -335,17 +317,6 @@ class TestYourResourceServer(TestCase):
 
     def test_delete_item(self):
         """ Delete an Item """
-        # account = self._create_accounts(1)[0]
-        # address = AddressFactory()
-        # resp = self.app.post(
-        #     "/accounts/{}/addresses".format(account.id), 
-        #     json=address.serialize(), 
-        #     content_type="application/json"
-        # )
-        # self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-        # data = resp.get_json()
-        # logging.debug(data)
-        # address_id = data["id"]
         wishdata = {"name": "wishname1","category": "category1"}
         wishlist = WishList()
         wishlist.deserialize(wishdata)
@@ -355,8 +326,6 @@ class TestYourResourceServer(TestCase):
         item = Item()
         item.deserialize(itemdata)
         item.create()
-
-
 
         # send delete request
         resp = self.app.delete(
