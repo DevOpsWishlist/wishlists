@@ -68,14 +68,14 @@ class TestYourResourceServer(TestCase):
         """ Test index call """
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    # def test_get_wishlist_list(self):
-    #     """ Get a list of WishLists """
-    #     self._create_wishlists(5)
-    #     resp = self.app.get("/wishlists")
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(len(data['data']), 5)
+   
+    def test_get_wishlist_list(self):
+        """ Get a list of WishLists """
+        self._create_wishlists(5)
+        resp = self.app.get("/wishlists")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data['data']), 5)
 
     # def test_get_account(self):
     #     """ Get a single Account """
