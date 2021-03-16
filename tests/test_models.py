@@ -44,7 +44,16 @@ class TestWishList(unittest.TestCase):
     ######################################################################
     #  T E S T   C A S E S
     ######################################################################
-
+    def test_create_item(self):
+        """ Create Item Test """
+        item = Item(id = 1, name ="Shoe", price=10, wishlist_id = 10)
+        self.assertTrue(item != None)
+        self.assertEqual(item.id, 1)
+        self.assertEqual(item.name, "Shoe")
+        self.assertEqual(item.price, 10)
+        self.assertEqual(item.wishlist_id, 10)
+        self.assertTrue(item.wishlist_id != 2)
+   
     def test_create_a_wishlist(self):
         """ Create a wishlist and assert that it exists """
         wishlist = WishList(id=1, name="My List", category="Clothes")  
