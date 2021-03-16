@@ -25,7 +25,7 @@ from . import app
 def index():
     """ Root URL response """
     return (
-        "Bullshit!",
+        "Hello World!",
         status.HTTP_200_OK,
 	)
 
