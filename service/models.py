@@ -99,7 +99,7 @@ class Item(db.Model, CommonModel):
         return {
             "id": self.id,
             "name": self.name,
-            "price": self.price,
+            "price": float(self.price),
             "modified_time": self.modified_time,
             "wishlist_id": self.wishlist_id
         }
@@ -117,13 +117,18 @@ class Item(db.Model, CommonModel):
             self.wishlist_id = data["wishlist_id"]
         except KeyError as error:
             raise DataValidationError(
-                "Invalid Item: missing " + error.args[0]
+                f'Invalid Item: missing {error.args[0]}'
             )
         except TypeError as error:
             raise DataValidationError(
-                "Invalid Item: body of request contained bad or no data"
+                'Invalid Item: body of request contained bad or no data'
             )
         return self
+   
+    def find_by_wishlist_id(self, wishlist_id):
+        """ Find a item by its wishlist id """
+        logger.info(f'Processing item lookup for wishlist id {wishlist_id} ...')
+        return self.query.filter_by(wishlist_id = f'{wishlist_id}').all()
 
 
 
