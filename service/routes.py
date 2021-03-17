@@ -186,6 +186,26 @@ def update_items(wishlist_id, item_id):
     return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
 
 ######################################################################
+# CREATE A Item
+######################################################################
+@app.route("/wishlists/<int:wishlist_id>/items", methods=["POST"])
+def create_item(wishlist_id):
+    """ Creates an item in a wishlist  """
+
+    app.logger.info("Request to create an item in a wishlist")
+    check_content_type("application/json")
+    item = Item()
+    item.deserialize(request.get_json())
+    item.create()
+    message = item.serialize()
+    location_url = url_for("get_item", wishlist_id=item.wishlist_id, item_id=item.id, _external=True)
+    app.logger.info(f'Item with ID {item.id} created')
+
+    return make_response(
+        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+    )
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 

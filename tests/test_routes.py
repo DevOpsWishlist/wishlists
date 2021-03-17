@@ -7,6 +7,7 @@ Test cases can be run with the following:
 """
 import os
 import logging
+import json
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from flask_api import status  # HTTP Status Codes
@@ -290,6 +291,22 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data['data']['name'], "itemname1")
         self.assertEqual(data['data']['price'], 21)
 
+    def test_create_item(self):
+        """ Update a Item """
+        wl = WishList(name='wishlist', category='cat')
+        wl.create()
+        update_data = {"name":"wish2","category":"cat"}
+
+        item_data = {"name":"anyitem1", "price":21, "wishlist_id":wl.id}
+
+        resp = self.app.post(
+            '/wishlists/1/items',
+            json=item_data,
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        created_item = resp.get_json()
+        self.assertEqual(created_item["name"], "anyitem1")
 
     def test_update_item(self):
         """ Update a Item """
