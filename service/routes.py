@@ -45,6 +45,25 @@ def list_wishlists():
     }
     return make_response(jsonify(response_body), status.HTTP_200_OK)
 
+######################################################################
+# READ an individual wishlist
+######################################################################
+@app.route("/wishlists/<int:wishlist_id>", methods=["GET"])
+def get_wishlist(wishlist_id):
+
+    """ Returns a wishlist by id """
+    app.logger.info('Request for an wishlist')
+    wl = WishList()
+    found_wl = wl.find(wishlist_id)
+    found_wl_serialized = found_wl.serialize()
+    found_wl_id = str(found_wl_serialized['id'])
+    app.logger.info(f'Returning item: {found_wl_id}')
+    response_body = {
+        'data': found_wl_serialized,
+        'id': found_wl_id
+    }
+    return make_response(jsonify(response_body), status.HTTP_200_OK)
+
 
 ######################################################################
 # CREATE A WishList
