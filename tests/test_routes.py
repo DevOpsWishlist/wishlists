@@ -1,5 +1,5 @@
 """
-<your resource name> API Service Test Suite
+WishLists API Service Test Suite
 
 Test cases can be run with the following:
   nosetests -v --with-spec --spec-color
@@ -78,22 +78,23 @@ class TestYourResourceServer(TestCase):
         data = resp.get_json()
         self.assertEqual(len(data['data']), 5)
 
-    # def test_get_account(self):
-    #     """ Get a single Account """
-    #     # get the id of an account
-    #     account = self._create_accounts(1)[0]
-    #     resp = self.app.get(
-    #         "/accounts/{}".format(account.id), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(data["name"], account.name)
+    def test_get_wishlist(self):
+        """ Get a wishlist by id """
 
-    # def test_get_account_not_found(self):
-    #     """ Get an Account that is not found """
-    #     resp = self.app.get("/accounts/0")
-    #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        # create a known wishlist
+        wl = WishList(name='wishlist', category='cat')
+        wl.create()
+
+        resp = self.app.get(
+            f'/wishlists/{wl.id}',
+            content_type="application/json"
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data['data']['name'], 'wishlist')
+        self.assertEqual(data['data']['category'], 'cat')
+        self.assertEqual(data['data']['id'], 1)
 
     def test_create_wishlist(self):
         """ Create a WishList """
@@ -184,7 +185,6 @@ class TestYourResourceServer(TestCase):
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        logging.debug(data)
         self.assertEqual(len(data['data']), 2)
 
     def test_get_item(self):
@@ -206,7 +206,6 @@ class TestYourResourceServer(TestCase):
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        logging.debug(data)
         self.assertEqual(data['data']['name'], "itemname1")
         self.assertEqual(data['data']['price'], 21)
 
