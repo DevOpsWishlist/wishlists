@@ -1,4 +1,8 @@
 # wishlists
+
+[![Build Status](https://travis-ci.com/DevOpsWishlist/wishlists.svg?branch=main)](https://travis-ci.com/DevOpsWishlist/wishlists)
+[![codecov](https://codecov.io/gh/DevOpsWishlist/wishlists/branch/main/graph/badge.svg?token=E5IZJVKRV9)](https://codecov.io/gh/DevOpsWishlist/wishlists)
+
 A collection of lists of item products I wish I had
 
 
