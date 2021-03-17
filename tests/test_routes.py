@@ -288,50 +288,24 @@ class TestYourResourceServer(TestCase):
 
 
     def test_update_item(self):
-        """ Update an item on an item """
-        
-        wishlist = WishList(name='wishlist', category='cat')
-        wishlist.create()
+        """ Update a Item """
+        wl = WishList(name='wishlist', category='cat')
+        wl.create()
+        update_data = {"name":"wish2","category":"cat"}
 
-        # create a known item
-        
-        itemdata = {"name": "itemname1","price": 21, "wishlist_id": wishlist.id}
-        item = Item()
-        item.deserialize(itemdata)
+        item = Item(name='anyitem', price=21, wishlist_id=wl.id)
         item.create()
+        update_itemdata = {"name":"anyitem1", "price":21, "wishlist_id":wl.id}
 
-        resp = self.app.post(
-            "/wishlists/{}/items".format(wishlist.id), 
-            json=item.serialize(),
-            content_type="application/json"
-        )
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-        
-        data = resp.get_json()
-        logging.debug(data)
-        item_id = data["id"]
-        data["name"] = "XXXX"
-
-        # send the update back
         resp = self.app.put(
-            "/wishlists/{}/items/{}".format(wishlist.id, item_id), 
-            json=data, 
-            content_type="application/json"
+            f'/wishlists/1/items/{item.id}',
+            json=update_itemdata,
+            content_type="application/json",
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_item = resp.get_json()
+        self.assertEqual(updated_item["name"], "anyitem1")
 
-        # retrieve it back
-        resp = self.app.get(
-            "/wishlists/{}/items/{}".format(wishlist.id, item_id), 
-            content_type="application/json"
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        data = resp.get_json()
-        logging.debug(data)
-        self.assertEqual(data["id"], item_id)
-        self.assertEqual(data["wishlist_id"], wishlist.id)
-        self.assertEqual(data["name"], "XXXX")
 
     def test_delete_item(self):
         """ Delete an Item """
