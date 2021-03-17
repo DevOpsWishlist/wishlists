@@ -263,6 +263,30 @@ class TestYourResourceServer(TestCase):
         logging.debug(data)
         self.assertEqual(len(data['data']), 2)
 
+    def test_get_item(self):
+        """ Get an item from a wishlist"""
+
+        # create a known wishlist
+        wl = WishList(name='wishlist', category='cat')
+        wl.create()
+        
+        itemdata = {"name": "itemname1","price": 21, "wishlist_id": wl.id}
+        item = Item()
+        item.deserialize(itemdata)
+        item.create()
+
+        resp = self.app.get(
+            f'/wishlists/{wl.id}/items/{item.id}',
+            content_type="application/json"
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data['data']['name'], "itemname1")
+        self.assertEqual(data['data']['price'], 21)
+
+
     # def test_update_address(self):
     #     """ Update an address on an account """
     #     # create a known address
