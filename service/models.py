@@ -124,6 +124,14 @@ class Item(db.Model, CommonModel):
                 "Invalid Item: body of request contained bad or no data"
             )
         return self
+   
+    def find_by_wishlist_id(self, wishlist_id):
+        """ Find a item by its wishlist id """
+        print("before the first line - find")
+        logger.info("Processing item lookup for wishlist id %s ...", wishlist_id)
+        print("in find by wishlist id")
+        print(wishlist_id)
+        return self.query.filter(self.wishlist_id == wishlist_id)
 
 
 

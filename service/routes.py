@@ -104,6 +104,26 @@ def update_wishlists(wishlist_id):
     wishlist.save()
     return make_response(jsonify(wishlist.serialize()), status.HTTP_200_OK)
 
+######################################################################
+# RETRIEVE a list of items (wishes)
+######################################################################
+@app.route("/wishlists/<int:wishlist_id>/items", methods=["GET"])
+def get_items(wishlist_id):
+
+    """ Returns all of the items in a wishlist """
+    app.logger.info("Request for items in wishlist")
+    #wishlist = WishList.find(wishlist_id)
+    print("in get_items")
+    print(wishlist_id)
+    items = Item.find_by_wishlist_id(wishlist_id)
+    results = [item.serialize() for item in items] 
+    app.logger.info(f'Returning {len(results)} items')
+    response_body = {
+    	'data': results,
+    	'count': len(results)
+    }
+    return make_response(jsonify(response_body), status.HTTP_200_OK)
+
 
 ######################################################################
 # DELETE A Item

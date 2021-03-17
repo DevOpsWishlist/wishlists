@@ -236,37 +236,50 @@ class TestYourResourceServer(TestCase):
     #     self.assertEqual(data["state"], address.state)
     #     self.assertEqual(data["postalcode"], address.postalcode)
 
-    # def test_get_address(self):
-    #     """ Get an address from an account """
-    #     # create a known address
-    #     account = self._create_accounts(1)[0]
-    #     address = AddressFactory()
-    #     resp = self.app.post(
-    #         "/accounts/{}/addresses".format(account.id), 
-    #         json=address.serialize(), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+    def test_get_items(self):
+        """ Get a list of items from a wishlist"""
+        # create a known wishlist
+        wl = WishList(name='wishlist', category='cat')
+        wl.create()
+        print("wishlist created")
+        
+        itemdata = {"name": "itemname1","price": 21, "wishlist_id": wl.id}
+        item = Item()
+        item.deserialize(itemdata)
+        item.create()
+        print("item created")
+        
+        itemdata_2 = {"name": "itemname2","price": 30, "wishlist_id": wl.id}
+        item_2 = Item()
+        item_2.deserialize(itemdata_2)
+        item_2.create()
 
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     address_id = data["id"]
+        print("hello")
+        # retrieve it back
 
-    #     # retrieve it back
-    #     resp = self.app.get(
-    #         "/accounts/{}/addresses/{}".format(account.id, address_id), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self.app.get(
+            f'/wishlists/{wl.id}/items',
+            content_type="application/json"
+        )
 
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     self.assertEqual(data["account_id"], account.id)
-    #     self.assertEqual(data["name"], address.name)
-    #     self.assertEqual(data["street"], address.street)
-    #     self.assertEqual(data["city"], address.city)
-    #     self.assertEqual(data["state"], address.state)
-    #     self.assertEqual(data["postalcode"], address.postalcode)
+        # resp = self.app.get(
+        #     "/wishlists/1/items/", 
+        #     content_type="application/json"
+        # )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        print("hello2")
+        data = resp.get_json()
+        print(data)
+        logging.debug(data)
+        self.assertEqual(len(data['data']), 2)
+
+        # logging.debug(data)
+        # self.assertEqual(data["account_id"], account.id)
+        # self.assertEqual(data["name"], address.name)
+        # self.assertEqual(data["street"], address.street)
+        # self.assertEqual(data["city"], address.city)
+        # self.assertEqual(data["state"], address.state)
+        # self.assertEqual(data["postalcode"], address.postalcode)
 
     # def test_update_address(self):
     #     """ Update an address on an account """
