@@ -140,15 +140,19 @@ class TestYourResourceServer(TestCase):
         updated_wishlist = resp.get_json()
         self.assertEqual(updated_wishlist["name"], "wish2")
 
-    # def test_delete_account(self):
-    #     """ Delete an Account """
-    #     # get the id of an account
-    #     account = self._create_accounts(1)[0]
-    #     resp = self.app.delete(
-    #         "/accounts/{}".format(account.id), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+    def test_delete_wishlist(self):
+        """ Delete a Wishlist """
+        wishdata = {"name": "wishname1","category": "category1"}
+        wishlist = WishList()
+        wishlist.deserialize(wishdata)
+        wishlist.create()
+
+        # send delete request
+        resp = self.app.delete(
+            f'/wishlists/{wishlist.id}',
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
     # def test_bad_request(self):
     #     """ Send wrong media type """
