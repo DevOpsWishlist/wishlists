@@ -84,6 +84,25 @@ def delete_wishlists(wishlist_id):
     app.logger.info(f'Wishlist with ID [{wishlist_id}] delete complete.')
     return make_response("ITS GONE!", status.HTTP_204_NO_CONTENT)
 
+######################################################################	
+# UPDATE AN EXISTING Wishlist
+######################################################################
+@app.route("/wishlists/<int:wishlist_id>", methods=["PUT"])
+def update_wishlists(wishlist_id):
+	"""
+	Update a Wishlist
+	This endpoint will update a Wishlist based the body that is posted
+	"""
+	app.logger.info("Request to update wishlist with id: %s", wishlist_id)
+	check_content_type("application/json")
+	wishlist = Wishlist.find(wishlist_id)
+	if not wishlist:
+	    raise NotFound("Wishlist with id '{}' was not found.".format(wishlist_id))
+	wishlist.deserialize(request.get_json())
+	wishlist.id = wishlist_id
+	wishlist.save()
+	return make_response(jsonify(wishlist.serialize()), status.HTTP_200_OK)
+
 
 ######################################################################
 # DELETE A Item
