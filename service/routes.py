@@ -105,17 +105,15 @@ def update_wishlists(wishlist_id):
     return make_response(jsonify(wishlist.serialize()), status.HTTP_200_OK)
 
 ######################################################################
-# RETRIEVE a list of items (wishes)
+# RETRIEVE a list of items belonging to a wishlist
 ######################################################################
 @app.route("/wishlists/<int:wishlist_id>/items", methods=["GET"])
 def get_items(wishlist_id):
 
     """ Returns all of the items in a wishlist """
-    app.logger.info("Request for items in wishlist")
-    #wishlist = WishList.find(wishlist_id)
-    print("in get_items")
-    print(wishlist_id)
-    items = Item.find_by_wishlist_id(wishlist_id)
+    app.logger.info('Request for items in wishlist')
+    item = Item()
+    items = item.find_by_wishlist_id(wishlist_id)
     results = [item.serialize() for item in items] 
     app.logger.info(f'Returning {len(results)} items')
     response_body = {
@@ -126,7 +124,7 @@ def get_items(wishlist_id):
 
 
 ######################################################################
-# DELETE A Item
+# DELETE AN Item
 ######################################################################
 @app.route("/wishlists/<int:wishlist_id>/items/<int:item_id>", methods=["DELETE"])
 def delete_items(wishlist_id, item_id):
