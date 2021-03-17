@@ -287,43 +287,51 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data['data']['price'], 21)
 
 
-    # def test_update_address(self):
-    #     """ Update an address on an account """
-    #     # create a known address
-    #     account = self._create_accounts(1)[0]
-    #     address = AddressFactory()
-    #     resp = self.app.post(
-    #         "/accounts/{}/addresses".format(account.id), 
-    #         json=address.serialize(), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+    def test_update_item(self):
+        """ Update an item on an item """
+        
+        wishlist = WishList(name='wishlist', category='cat')
+        wishlist.create()
 
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     address_id = data["id"]
-    #     data["name"] = "XXXX"
+        # create a known item
+        
+        itemdata = {"name": "itemname1","price": 21, "wishlist_id": wishlist.id}
+        item = Item()
+        item.deserialize(itemdata)
+        item.create()
 
-    #     # send the update back
-    #     resp = self.app.put(
-    #         "/accounts/{}/addresses/{}".format(account.id, address_id), 
-    #         json=data, 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self.app.post(
+            "/wishlists/{}/items".format(wishlist.id), 
+            json=item.serialize(),
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        
+        data = resp.get_json()
+        logging.debug(data)
+        item_id = data["id"]
+        data["name"] = "XXXX"
 
-    #     # retrieve it back
-    #     resp = self.app.get(
-    #         "/accounts/{}/addresses/{}".format(account.id, address_id), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # send the update back
+        resp = self.app.put(
+            "/wishlists/{}/items/{}".format(wishlist.id, item_id), 
+            json=data, 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     self.assertEqual(data["id"], address_id)
-    #     self.assertEqual(data["account_id"], account.id)
-    #     self.assertEqual(data["name"], "XXXX")
+        # retrieve it back
+        resp = self.app.get(
+            "/wishlists/{}/items/{}".format(wishlist.id, item_id), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["id"], item_id)
+        self.assertEqual(data["wishlist_id"], wishlist.id)
+        self.assertEqual(data["name"], "XXXX")
 
     def test_delete_item(self):
         """ Delete an Item """
