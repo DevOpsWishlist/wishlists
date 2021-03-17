@@ -165,6 +165,25 @@ def delete_items(wishlist_id, item_id):
     app.logger.info(f'Item with ID [{item_id}] delete complete.')
     return make_response("ITS GONE!", status.HTTP_204_NO_CONTENT)
 
+######################################################################
+# UPDATE AN EXISTING Item
+######################################################################
+@app.route("/wishlists/<int:wishlist_id>/items/<int:item_id>", methods=["PUT"])
+def update_items(wishlist_id, item_id):
+    """
+    Update an Item
+
+    This endpoint will update an item based the body that is posted
+    """
+    app.logger.info("Request to update item with id: %s", item_id)
+    check_content_type("application/json")
+    item = Item.find(item_id)
+    if not item:
+        raise NotFound("Item with id '{}' was not found.".format(item_id))
+    item.deserialize(request.get_json())
+    item.id = item_id
+    item.save()
+    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

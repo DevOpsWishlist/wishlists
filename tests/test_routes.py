@@ -291,43 +291,25 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data['data']['price'], 21)
 
 
-    # def test_update_address(self):
-    #     """ Update an address on an account """
-    #     # create a known address
-    #     account = self._create_accounts(1)[0]
-    #     address = AddressFactory()
-    #     resp = self.app.post(
-    #         "/accounts/{}/addresses".format(account.id), 
-    #         json=address.serialize(), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+    def test_update_item(self):
+        """ Update a Item """
+        wl = WishList(name='wishlist', category='cat')
+        wl.create()
+        update_data = {"name":"wish2","category":"cat"}
 
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     address_id = data["id"]
-    #     data["name"] = "XXXX"
+        item = Item(name='anyitem', price=21, wishlist_id=wl.id)
+        item.create()
+        update_itemdata = {"name":"anyitem1", "price":21, "wishlist_id":wl.id}
 
-    #     # send the update back
-    #     resp = self.app.put(
-    #         "/accounts/{}/addresses/{}".format(account.id, address_id), 
-    #         json=data, 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self.app.put(
+            f'/wishlists/1/items/{item.id}',
+            json=update_itemdata,
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_item = resp.get_json()
+        self.assertEqual(updated_item["name"], "anyitem1")
 
-    #     # retrieve it back
-    #     resp = self.app.get(
-    #         "/accounts/{}/addresses/{}".format(account.id, address_id), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     self.assertEqual(data["id"], address_id)
-    #     self.assertEqual(data["account_id"], account.id)
-    #     self.assertEqual(data["name"], "XXXX")
 
     def test_delete_item(self):
         """ Delete an Item """
