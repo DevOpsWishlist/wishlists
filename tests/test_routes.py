@@ -95,37 +95,18 @@ class TestYourResourceServer(TestCase):
     #     resp = self.app.get("/accounts/0")
     #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-    # def test_create_account(self):
-    #     """ Create a new Account """
-    #     account = AccountFactory()
-    #     resp = self.app.post(
-    #         "/accounts", 
-    #         json=account.serialize(), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-        
-    #     # Make sure location header is set
-    #     location = resp.headers.get("Location", None)
-    #     self.assertIsNotNone(location)
-        
-    #     # Check the data is correct
-    #     new_account = resp.get_json()
-    #     self.assertEqual(new_account["name"], account.name, "Names does not match")
-    #     self.assertEqual(new_account["addresses"], account.addresses, "Address does not match")
-    #     self.assertEqual(new_account["email"], account.email, "Email does not match")
-    #     self.assertEqual(new_account["phone_number"], account.phone_number, "Phone does not match")
-    #     self.assertEqual(new_account["date_joined"], str(account.date_joined), "Date Joined does not match")
+    def test_create_wishlist(self):
+        """ Create a WishList """
+        wish_data = {"name":"wish2","category":"cat"}
 
-    #     # Check that the location header was correct by getting it
-    #     resp = self.app.get(location, content_type="application/json")
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     new_account = resp.get_json()
-    #     self.assertEqual(new_account["name"], account.name, "Names does not match")
-    #     self.assertEqual(new_account["addresses"], account.addresses, "Address does not match")
-    #     self.assertEqual(new_account["email"], account.email, "Email does not match")
-    #     self.assertEqual(new_account["phone_number"], account.phone_number, "Phone does not match")
-    #     self.assertEqual(new_account["date_joined"], str(account.date_joined), "Date Joined does not match")
+        resp = self.app.post(
+            '/wishlists',
+            json=wish_data,
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        created_wishlist = resp.get_json()
+        self.assertEqual(created_wishlist["name"], "wish2")
 
     def test_update_wishlist(self):
         """ Update a Wishlist """
@@ -155,91 +136,29 @@ class TestYourResourceServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
-    # def test_bad_request(self):
-    #     """ Send wrong media type """
-    #     account = AccountFactory()
-    #     resp = self.app.post(
-    #         "/accounts", 
-    #         json={"name": "not enough data"}, 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
-    # def test_unsupported_media_type(self):
-    #     """ Send wrong media type """
-    #     account = AccountFactory()
-    #     resp = self.app.post(
-    #         "/accounts", 
-    #         json=account.serialize(), 
-    #         content_type="test/html"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    def test_unsupported_media_type(self):
+        """ Send wrong media type """
+        resp = self.app.post(
+            "/wishlists", 
+            json={}, 
+            content_type="test/html"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    # def test_method_not_allowed(self):
-    #     """ Make an illegal method call """
-    #     resp = self.app.put(
-    #         "/accounts", 
-    #         json={"not": "today"}, 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+    def test_method_not_allowed(self):
+        """ Make an illegal method call """
+        resp = self.app.put(
+            "/wishlists", 
+            json={"not": "today"}, 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 ######################################################################
 #  ITEMS   T E S T   C A S E S
 ######################################################################
-
-    # def test_get_address_list(self):
-    #     """ Get a list of Addresses """
-    #     # add two addresses to account
-    #     account = self._create_accounts(1)[0]
-    #     address_list = AddressFactory.create_batch(2)
-
-    #     # Create address 1
-    #     resp = self.app.post(
-    #         "/accounts/{}/addresses".format(account.id), 
-    #         json=address_list[0].serialize(), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     # Create address 2
-    #     resp = self.app.post(
-    #         "/accounts/{}/addresses".format(account.id), 
-    #         json=address_list[1].serialize(), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     # get the list back and make sure there are 2
-    #     resp = self.app.get(
-    #         "/accounts/{}/addresses".format(account.id), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    #     data = resp.get_json()
-    #     self.assertEqual(len(data), 2)
-
-
-    # def test_add_address(self):
-    #     """ Add an address to an account """
-    #     account = self._create_accounts(1)[0]
-    #     address = AddressFactory()
-    #     resp = self.app.post(
-    #         "/accounts/{}/addresses".format(account.id), 
-    #         json=address.serialize(), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     self.assertEqual(data["account_id"], account.id)
-    #     self.assertEqual(data["name"], address.name)
-    #     self.assertEqual(data["street"], address.street)
-    #     self.assertEqual(data["city"], address.city)
-    #     self.assertEqual(data["state"], address.state)
-    #     self.assertEqual(data["postalcode"], address.postalcode)
 
     def test_get_items(self):
         """ Get a list of items from a wishlist"""
@@ -292,7 +211,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data['data']['price'], 21)
 
     def test_create_item(self):
-        """ Update a Item """
+        """ Create a Item """
         wl = WishList(name='wishlist', category='cat')
         wl.create()
         update_data = {"name":"wish2","category":"cat"}
