@@ -126,28 +126,19 @@ class TestYourResourceServer(TestCase):
     #     self.assertEqual(new_account["phone_number"], account.phone_number, "Phone does not match")
     #     self.assertEqual(new_account["date_joined"], str(account.date_joined), "Date Joined does not match")
 
-    # def test_update_account(self):
-    #     """ Update an existing Account """
-    #     # create an Account to update
-    #     test_account = AccountFactory()
-    #     resp = self.app.post(
-    #         "/accounts", 
-    #         json=test_account.serialize(), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     # update the pet
-    #     new_account = resp.get_json()
-    #     new_account["name"] = "Happy-Happy Joy-Joy"
-    #     resp = self.app.put(
-    #         "/accounts/{}".format(new_account["id"]),
-    #         json=new_account,
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     updated_account = resp.get_json()
-    #     self.assertEqual(updated_account["name"], "Happy-Happy Joy-Joy")
+    def test_update_wishlist(self):
+        """ Update a Wishlist """
+        wl = WishList(name='wishlist', category='cat')
+        wl.create()
+        update_data = {"name":"wish2","category":"cat"}
+        resp = self.app.put(
+            "/wishlists/1",
+            json=update_data,
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_wishlist = resp.get_json()
+        self.assertEqual(updated_wishlist["name"], "wish2")
 
     # def test_delete_account(self):
     #     """ Delete an Account """
