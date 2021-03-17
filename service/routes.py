@@ -105,7 +105,7 @@ def update_wishlists(wishlist_id):
     return make_response(jsonify(wishlist.serialize()), status.HTTP_200_OK)
 
 ######################################################################
-# RETRIEVE a list of items belonging to a wishlist
+# LIST items belonging to a wishlist
 ######################################################################
 @app.route("/wishlists/<int:wishlist_id>/items", methods=["GET"])
 def get_items(wishlist_id):
@@ -119,6 +119,25 @@ def get_items(wishlist_id):
     response_body = {
     	'data': results,
     	'count': len(results)
+    }
+    return make_response(jsonify(response_body), status.HTTP_200_OK)
+
+######################################################################
+# READ an individual item belonging to a wishlist
+######################################################################
+@app.route("/wishlists/<int:wishlist_id>/items/<int:item_id>", methods=["GET"])
+def get_item(wishlist_id, item_id):
+
+    """ Returns one item in a wishlist """
+    app.logger.info('Request for an item in wishlist')
+    item = Item()
+    found_item = item.find(item_id)
+    found_item_serialized = found_item.serialize()
+    found_item_id = str(found_item_serialized['id'])
+    app.logger.info(f'Returning item: {found_item_id}')
+    response_body = {
+    	'data': found_item_serialized,
+    	'id': found_item_id
     }
     return make_response(jsonify(response_body), status.HTTP_200_OK)
 
