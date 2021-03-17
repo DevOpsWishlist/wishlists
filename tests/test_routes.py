@@ -128,23 +128,9 @@ class TestYourResourceServer(TestCase):
 
     def test_update_wishlist(self):
         """ Update a Wishlist """
-        # create an Wishlist to update
-        # test_account = AccountFactory()
-        # resp = self.app.post(
-        #     "/accounts", 
-        #     json=test_account.serialize(), 
-        #     content_type="application/json"
-        # )
-        # self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
         wl = WishList(name='wishlist', category='cat')
         wl.create()
-
-        # update the pet
-        # new_account = resp.get_json()
-        # new_account["name"] = "Happy-Happy Joy-Joy"
-        
-        update_data = {"name":"wish2"}
+        update_data = {"name":"wish2","category":"cat"}
         resp = self.app.put(
             "/wishlists/1",
             json=update_data,
