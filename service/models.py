@@ -130,7 +130,33 @@ class Item(db.Model, CommonModel):
         logger.info(f'Processing item lookup for wishlist id {wishlist_id} ...')
         return self.query.filter_by(wishlist_id = f'{wishlist_id}').all()
 
+    @classmethod
+    def find_by_id(self, id):
+        """Returns all item with the given id
+        """
+        logger.info(f'Processing name query for {id} ...')
+        return self.query.filter(self.id == id)
 
+    @classmethod
+    def find_by_name(self, name):
+        """Returns all item with the given name
+        """
+        logger.info(f'Processing name query for {name} ...')
+        return self.query.filter(self.name == name)
+
+    @classmethod
+    def find_by_price(self, price):
+        """Returns all item with the given price
+        """
+        logger.info(f'Processing name query for {price} ...')
+        return self.query.filter(self.price == price)
+
+    @classmethod
+    def find_by_modified_time(self, modified_time):
+        """Returns all item with the given modified_time
+        """
+        logger.info(f'Processing name query for {modified_time} ...')
+        return self.query.filter(self.modified_time == modified_time)
 
 class WishList(db.Model, CommonModel):
     """
@@ -178,3 +204,46 @@ class WishList(db.Model, CommonModel):
                 "Invalid WishList: body of request contained bad or no data"
             )
         return self
+
+    @classmethod
+    def find_by_id(self, id):
+        """Returns all wishlists with the given id
+        """
+        logger.info(f'Processing name query for {id} ...')
+        return self.query.filter(self.id == id)
+
+    @classmethod
+    def find_by_name(self, name):
+        """Returns all item with the given name
+        """
+        logger.info(f'Processing name query for {name} ...')
+        return self.query.filter(self.name == name)
+   
+    @classmethod
+    def find_by_category(self, category):
+        """Returns all item with the given category
+        """
+        logger.info(f'Processing name query for {category} ...')
+        return self.query.filter(self.category == category)
+    
+    @classmethod
+    def find_by_created_time(self, created_time):
+        """Returns all item with the given created_time
+        """
+        logger.info(f'Processing name query for {created_time} ...')
+        return self.query.filter(self.created_time == created_time)
+
+    @classmethod
+    def find_by_modified_time(self, modified_time):
+        """Returns all item with the given modified_time
+        """
+        logger.info(f'Processing name query for {modified_time} ...')
+        return self.query.filter(self.modified_time == modified_time)
+
+
+        @classmethod
+    def find_by_items(self, items):
+        """Returns all item with the given items
+        """
+        logger.info(f'Processing name query for {items} ...')
+        return self.query.filter(self.items == items)
