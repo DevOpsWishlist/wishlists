@@ -36,9 +36,22 @@ def index():
 def list_wishlists():
     """ Returns all of the Wishlists """
     app.logger.info("Request for wishlists")
-    wishlists = WishList.all()
+    
+    wishlists = []
+    category = request.args.get("category")
+    name = request.args.get("name")
+
+    if category:
+        wishlists = WishList.find_by_category(category)
+    elif name:
+        wishlists = WishList.find_by_name(name)
+    else:
+        wishlists = WishList.all()
+   # wishlists = WishList.all()
+   
     results = [wishlist.serialize() for wishlist in wishlists]
     app.logger.info(f'Returning {len(results)}')
+    
     response_body = {
     	'data': results,
     	'count': len(results)
@@ -136,9 +149,22 @@ def get_items(wishlist_id):
 
     """ Returns all of the items in a wishlist """
     app.logger.info('Request for items in wishlist')
-    item = Item()
-    items = item.find_by_wishlist_id(wishlist_id)
+    #item = Item()
+    items = []
+
+    name = request.args.get("name")
+    price = request.args.get("price")
+
+    if name: 
+        items = Item.find_by_name(name)
+    elif price: 
+        items = Item.find_by_price(price)
+    else: 
+        items = Item.all()
+
+    #items = item.find_by_wishlist_id(wishlist_id)
     results = [item.serialize() for item in items] 
+    
     app.logger.info(f'Returning {len(results)} items')
     response_body = {
     	'data': results,

@@ -67,12 +67,15 @@ class TestYourResourceServer(TestCase):
     
     def _create_items(self, count):
         """ Factory method to create items in bulk """
+        wl = WishList()
+
+        items = []
         for x in range(count):
             cost = 1+x 
-            item = Item(name=f'item{x}', price=cost, wishlist_id = 1) #should this be a changing number?
-            print(item)
-            item.create()
-         
+            item = Item(name=f'item{x}', price=cost, wishlist_id = wl.id) #should this be a changing number?
+            item.create() 
+            items.append(item)
+        return items
 
 ######################################################################
 #  WISHLIST  T E S T   C A S E S
@@ -172,22 +175,36 @@ class TestYourResourceServer(TestCase):
     def test_query_wishlists_by_name(self):
         """ Query Wishlists by Name """
         wl = self._create_wishlists(10)
-        print("this is wl:", wl)
         test_name = wl[0].name
-        print("this is test_name:", test_name)
         wl_name = [wish for wish in wl if wish.name == test_name]
-        print("this is wl_name:", wl_name)
-        print("this is wl_name len:", String(len(wl_name)))
         resp = self.app.get(
             f'/wishlists?name={test_name}'
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(wl_name))
-        print("this is data len:", len(data))
+        data = resp.get_json() #dict
+        name_data = data["data"] #dict w/ list as value
+        self.assertEqual(len(name_data), len(wl_name))
+        
         # check the data just to be sure
         for i in data:
-            self.assertEqual(wl["name"], test_name)
+            self.assertEqual(name_data[0]["name"], test_name)
+
+    def test_query_wishlists_by_category(self):
+        """ Query Wishlists by Category """
+        wl = self._create_wishlists(10)
+        test_category = wl[0].category
+        wl_category = [wish for wish in wl if wish.category == test_category]
+        resp = self.app.get(
+            f'/wishlists?category={test_category}'
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json() #dict
+        category_data = data["data"] #dict w/ list as value
+        self.assertEqual(len(category_data), len(wl_category))
+        
+        # check the data just to be sure
+        for i in data:
+            self.assertEqual(category_data[0]["category"], test_category)
 
 ######################################################################
 #  I T E M S   T E S T   C A S E S
@@ -297,17 +314,22 @@ class TestYourResourceServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
-    # def test_items_by_name(self):
+    # def test_query_items_by_name(self):
     #     """ Query Items by Name """
+    #     #wl = WishList()
     #     items = self._create_items(10)
     #     test_name = items[0].name
-    #     name_item = [item for item in items if item.name == test_name]
+    #     wl_id = items[0].wishlist_id
+    #     item_name = [item for item in items if item.name == test_name]
     #     resp = self.app.get(
-    #         f'/wishlists/{wishlist.id}/items', query_string="category={}".format(quote_plus(test_name))
+    #         f'/wishlists/<int:wl_id>/items?name={test_name}'
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(len(data), len(name_item))
+    #     data = resp.get_json() #dict
+    #     print(data)
+    #     #name_data = data["data"] #dict w/ list as value
+    #     self.assertEqual(len(data), len(test_name))
+        
     #     # check the data just to be sure
-    #     for item in data:
-    #         self.assertEqual(item["name"], test_name)
+    #     for i in data:
+    #         self.assertEqual(data["name"], test_name)
