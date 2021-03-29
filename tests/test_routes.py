@@ -14,6 +14,7 @@ from flask_api import status  # HTTP Status Codes
 from tests.factories import WishListFactory, ItemFactory
 from service.models import WishList, Item, db
 from service.routes import app, init_db
+from urllib.parse import quote_plus
 
 # DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
 DATABASE_URI = os.getenv(
@@ -57,9 +58,21 @@ class TestYourResourceServer(TestCase):
 
     def _create_wishlists(self, count):
         """ Factory method to create wishlists in bulk """
+        wishlists = [] #added list to append to 
         for x in range(count):
             wl = WishList(name=f'wishlist{x}', category=f'cat{x}')
             wl.create()
+            wishlists.append(wl)
+        return wishlists
+    
+    def _create_items(self, count):
+        """ Factory method to create items in bulk """
+        for x in range(count):
+            cost = 1+x 
+            item = Item(name=f'item{x}', price=cost, wishlist_id = 1) #should this be a changing number?
+            print(item)
+            item.create()
+         
 
 ######################################################################
 #  WISHLIST  T E S T   C A S E S
@@ -156,9 +169,28 @@ class TestYourResourceServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
+    def test_query_wishlists_by_name(self):
+        """ Query Wishlists by Name """
+        wl = self._create_wishlists(10)
+        print("this is wl:", wl)
+        test_name = wl[0].name
+        print("this is test_name:", test_name)
+        wl_name = [wish for wish in wl if wish.name == test_name]
+        print("this is wl_name:", wl_name)
+        print("this is wl_name len:", String(len(wl_name)))
+        resp = self.app.get(
+            f'/wishlists?name={test_name}'
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(wl_name))
+        print("this is data len:", len(data))
+        # check the data just to be sure
+        for i in data:
+            self.assertEqual(wl["name"], test_name)
 
 ######################################################################
-#  ITEMS   T E S T   C A S E S
+#  I T E M S   T E S T   C A S E S
 ######################################################################
 
     def test_get_items(self):
@@ -264,3 +296,18 @@ class TestYourResourceServer(TestCase):
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+    # def test_items_by_name(self):
+    #     """ Query Items by Name """
+    #     items = self._create_items(10)
+    #     test_name = items[0].name
+    #     name_item = [item for item in items if item.name == test_name]
+    #     resp = self.app.get(
+    #         f'/wishlists/{wishlist.id}/items', query_string="category={}".format(quote_plus(test_name))
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+    #     data = resp.get_json()
+    #     self.assertEqual(len(data), len(name_item))
+    #     # check the data just to be sure
+    #     for item in data:
+    #         self.assertEqual(item["name"], test_name)

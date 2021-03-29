@@ -125,6 +125,7 @@ class Item(db.Model, CommonModel):
             )
         return self
    
+    #should this be a classmethod as well?
     def find_by_wishlist_id(self, wishlist_id):
         """ Find a item by its wishlist id """
         logger.info(f'Processing item lookup for wishlist id {wishlist_id} ...')
@@ -174,7 +175,7 @@ class WishList(db.Model, CommonModel):
     items = db.relationship("Item", backref="wish_list", lazy='dynamic')
 
     def __repr__(self):
-        return f'WishList {self.name} id=[{self.id}]'
+        return f'WishList {self.name} id =[{self.id}]'
 
     def serialize(self):
         """ Serializes a WishList into a dictionary """
@@ -241,7 +242,7 @@ class WishList(db.Model, CommonModel):
         return self.query.filter(self.modified_time == modified_time)
 
 
-        @classmethod
+    @classmethod
     def find_by_items(self, items):
         """Returns all wishlists with the given items
         """
