@@ -67,14 +67,16 @@ class TestYourResourceServer(TestCase):
     
     def _create_items(self, count):
         """ Factory method to create items in bulk """
-        wl = WishList()
+        wl = WishList(name = 'wishlist1', category = 'category1', id = 1)
 
         items = []
         for x in range(count):
             cost = 1+x 
-            item = Item(name=f'item{x}', price=cost, wishlist_id = wl.id) #should this be a changing number?
+            item = Item(name=f'item{x}', price=cost, wishlist_id = wl.wish_list) #should this be a changing number?
             item.create() 
             items.append(item)
+        
+
         return items
 
 ######################################################################
@@ -314,22 +316,21 @@ class TestYourResourceServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
-    # def test_query_items_by_name(self):
-    #     """ Query Items by Name """
-    #     #wl = WishList()
-    #     items = self._create_items(10)
-    #     test_name = items[0].name
-    #     wl_id = items[0].wishlist_id
-    #     item_name = [item for item in items if item.name == test_name]
-    #     resp = self.app.get(
-    #         f'/wishlists/<int:wl_id>/items?name={test_name}'
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json() #dict
-    #     print(data)
-    #     #name_data = data["data"] #dict w/ list as value
-    #     self.assertEqual(len(data), len(test_name))
+    def test_query_items_by_name(self):
+        """ Query Items by Name """
+        items = self._create_items(10)
+        test_name = items[0].name
+        wl_id = items[0].wishlist_id
+        item_name = [item for item in items if item.name == test_name]
+        resp = self.app.get(
+            f'/wishlists/<int:wl_id>/items?name={test_name}'
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json() #dict
+        print(data)
+        #name_data = data["data"] #dict w/ list as value
+        self.assertEqual(len(data), len(test_name))
         
-    #     # check the data just to be sure
-    #     for i in data:
-    #         self.assertEqual(data["name"], test_name)
+        # check the data just to be sure
+        for i in data:
+            self.assertEqual(data["name"], test_name)
