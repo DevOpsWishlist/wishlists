@@ -179,17 +179,20 @@ class TestYourResourceServer(TestCase):
         wl = self._create_wishlists(10)
         test_name = wl[0].name
         wl_name = [wish for wish in wl if wish.name == test_name]
+
+        #API Call 
         resp = self.app.get(
             f'/wishlists?name={test_name}'
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
         data = resp.get_json() #dict
         logging.debug('data = %s', data)
         name_data = data["data"] #dict w/ list as value
         self.assertEqual(len(name_data), len(wl_name))
         
-        # check the data just to be sure
-        for i in data:
+        for wishlist in name_data:
+            logging.debug('wishlist = %s', wishlist)
             self.assertEqual(name_data[0]["name"], test_name)
 
     def test_query_wishlists_by_category(self):
@@ -197,18 +200,21 @@ class TestYourResourceServer(TestCase):
         wl = self._create_wishlists(10)
         test_category = wl[0].category
         wl_category = [wish for wish in wl if wish.category == test_category]
+
+        #API Call 
         resp = self.app.get(
             f'/wishlists?category={test_category}'
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
         data = resp.get_json() #dict
         logging.debug('data = %s', data)
         category_data = data["data"] #dict w/ list as value
         self.assertEqual(len(category_data), len(wl_category))
         
-        # check the data just to be sure
-        for i in data:
-            self.assertEqual(category_data[0]["category"], test_category)
+        for wishlist in category_data:
+            logging.debug('wishlist = %s', wishlist)
+            self.assertEqual(wishlist["category"], test_category)
 
 ######################################################################
 #  I T E M S   T E S T   C A S E S
@@ -325,42 +331,43 @@ class TestYourResourceServer(TestCase):
         wl_id = items[0].wishlist_id
         item_name = [item for item in items if item.name == test_name]
         
+        #API Call 
         resp = self.app.get(
             f'/wishlists/{wl_id}/items?name={test_name}'
         )
-
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
         self.assertIn(b'item0', resp.data)
         self.assertNotIn(b'NotAnItem', resp.data)
+        
         data = resp.get_json() #dict
         logging.debug('data = %s', data)
         name_data = data["data"] #dict w/ list as value
         
-        for i in data:
-            self.assertEqual(name_data[0]["name"], test_name)
+        for item in name_data:
+            logging.debug('item = %s', item)
+            self.assertEqual(item["name"], test_name)
 
     def test_query_items_by_price(self):
         """ Query Items by Price """
         items = self._create_items(10)
         test_price = items[0].price
-        print(test_price)
         wl_id = items[0].wishlist_id
         item_price = [item for item in items if item.price == test_price]
-        print(item_price)
+        
+        #API Call 
         resp = self.app.get(
             f'/wishlists/{wl_id}/items?price={test_price}'
         )
-
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
         data = resp.get_json() #dict
-        print(data)
         logging.debug('data = %s', data)
         price_data = data["data"] #dict w/ list as value
-        print(price_data)
         
-        for i in data:
-            self.assertEqual(price_data[0]["price"], test_price)
+        for item in price_data:
+            logging.debug('item = %s', item)
+            self.assertEqual(item["price"], test_price) 
 
     
 
