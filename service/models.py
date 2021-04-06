@@ -152,12 +152,6 @@ class Item(db.Model, CommonModel):
         logger.info(f'Processing name query for {price} ...')
         return self.query.filter(self.price == price)
 
-    @classmethod
-    def find_by_modified_time(self, modified_time):
-        """Returns all item with the given modified_time
-        """
-        logger.info(f'Processing name query for {modified_time} ...')
-        return self.query.filter(self.modified_time == modified_time)
 
 class WishList(db.Model, CommonModel):
     """
@@ -226,25 +220,4 @@ class WishList(db.Model, CommonModel):
         """
         logger.info(f'Processing name query for {category} ...')
         return self.query.filter(self.category == category)
-    
-    @classmethod
-    def find_by_created_time(self, created_time):
-        """Returns all wishlists with the given created_time
-        """
-        logger.info(f'Processing name query for {created_time} ...')
-        return self.query.filter(self.created_time == created_time)
 
-    @classmethod
-    def find_by_modified_time(self, modified_time):
-        """Returns all wishlists with the given modified_time
-        """
-        logger.info(f'Processing name query for {modified_time} ...')
-        return self.query.filter(self.modified_time == modified_time)
-
-
-    @classmethod
-    def find_by_items(self, items):
-        """Returns all wishlists with the given items
-        """
-        logger.info(f'Processing name query for {items} ...')
-        return self.query.filter(self.items == items)
