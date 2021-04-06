@@ -125,11 +125,32 @@ class Item(db.Model, CommonModel):
             )
         return self
    
+    #should this be a classmethod as well?
     def find_by_wishlist_id(self, wishlist_id):
         """ Find a item by its wishlist id """
         logger.info(f'Processing item lookup for wishlist id {wishlist_id} ...')
         return self.query.filter_by(wishlist_id = f'{wishlist_id}').all()
 
+    @classmethod
+    def find_by_id(self, id):
+        """Returns all item with the given id
+        """
+        logger.info(f'Processing name query for {id} ...')
+        return self.query.filter(self.id == id)
+
+    @classmethod
+    def find_by_name(self, name):
+        """Returns all item with the given name
+        """
+        logger.info(f'Processing name query for {name} ...')
+        return self.query.filter(self.name == name)
+
+    @classmethod
+    def find_by_price(self, price):
+        """Returns all item with the given price
+        """
+        logger.info(f'Processing name query for {price} ...')
+        return self.query.filter(self.price == price)
 
 
 class WishList(db.Model, CommonModel):
@@ -148,7 +169,7 @@ class WishList(db.Model, CommonModel):
     items = db.relationship("Item", backref="wish_list", lazy='dynamic')
 
     def __repr__(self):
-        return f'WishList {self.name} id=[{self.id}]'
+        return f'WishList {self.name} id =[{self.id}]'
 
     def serialize(self):
         """ Serializes a WishList into a dictionary """
@@ -178,3 +199,25 @@ class WishList(db.Model, CommonModel):
                 "Invalid WishList: body of request contained bad or no data"
             )
         return self
+
+    @classmethod
+    def find_by_id(self, id):
+        """Returns all wishlists with the given id
+        """
+        logger.info(f'Processing name query for {id} ...')
+        return self.query.filter(self.id == id)
+
+    @classmethod
+    def find_by_name(self, name):
+        """Returns all wishlists with the given name
+        """
+        logger.info(f'Processing name query for {name} ...')
+        return self.query.filter(self.name == name)
+   
+    @classmethod
+    def find_by_category(self, category):
+        """Returns all wishlists with the given category
+        """
+        logger.info(f'Processing name query for {category} ...')
+        return self.query.filter(self.category == category)
+
