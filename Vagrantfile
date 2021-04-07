@@ -129,10 +129,6 @@ Vagrant.configure(2) do |config|
     echo "ibmcloud login -a https://cloud.ibm.com --apikey @~/.wishlists/apiKey.json -r us-south"
     echo "ibmcloud target --cf -o ak8647@nyu.edu -s dev"
     echo "\n************************************"
-    # Show the GUI URL for Couch DB
-    echo "\n"
-    echo "CouchDB Admin GUI can be found at:\n"
-    echo "http://127.0.0.1:5984/_utils"    
   SHELL
 
 end
