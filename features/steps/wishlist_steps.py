@@ -21,14 +21,14 @@ ID_PREFIX = 'wishlist_'
 
 @given('the following wishlist')
 def step_impl(context):
-    """ Delete all Wishlists and load new ones """
+    """ Delete all Wishlists and items, and load new ones """
     headers = {'Content-Type': 'application/json'}
     # list all of a wishlists and delete them one by one
     context.resp = requests.get(context.base_url + '/wishlists', headers=headers)
     expect(context.resp.status_code).to_equal(200)
-    for wl in context.resp.json():
-        context.resp = requests.delete(context.base_url + '/wishlists/' + str(wl["_id"]), headers=headers)
-        expect(context.resp.status_code).to_equal(204)
+    #for wl in context.resp.json():
+      #  context.resp = requests.delete(context.base_url + '/wishlists/' + str(wl["_id"]), headers=headers)
+      #  expect(context.resp.status_code).to_equal(204)
     
     # load the database with new pets
     create_url = context.base_url + '/wishlists'
@@ -37,6 +37,30 @@ def step_impl(context):
             "name": row['name'],
             "category": row['category'],
             "items": row['items']
+            }
+        payload = json.dumps(data)
+        context.resp = requests.post(create_url, data=payload, headers=headers)
+        expect(context.resp.status_code).to_equal(201)
+
+@given('the following items')
+def step_impl(context):
+    """ Delete all items, and load new ones """
+    headers = {'Content-Type': 'application/json'}
+    # list all of a wishlists and delete them one by one
+    context.resp = requests.get(context.base_url + '/wishlists', headers=headers)
+    expect(context.resp.status_code).to_equal(200)
+    #for wl in context.resp.json():
+       # context.resp = requests.delete(context.base_url + '/wishlists/' + str(wl["_id"]), headers=headers)
+       # expect(context.resp.status_code).to_equal(204)
+    
+    # load the database with new items
+    create_url = context.base_url + '/wishlists'
+    for row in context.table:
+        data = {
+            "id": row['item_id']
+            "name": row['item_name'],
+            "price": row['item_price'],
+            "wishlist_id": row['item_wishlist_id']
             }
         payload = json.dumps(data)
         context.resp = requests.post(create_url, data=payload, headers=headers)
