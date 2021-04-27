@@ -3,9 +3,10 @@ import os
 from service.models import WishList, Item, DataValidationError, db
 from service.routes import app, init_db
 
-DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
-)
+# DATABASE_URI = os.getenv(
+#     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
+# )
+from config import DATABASE_URI
 
 ######################################################################
 #  T E S T   C A S E S
