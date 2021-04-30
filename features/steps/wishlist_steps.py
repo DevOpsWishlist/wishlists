@@ -17,9 +17,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions
 
-ID_PREFIX = 'wishlist_'
+ID_PREFIX = 'wl_'
 
-@given('the following wishlist')
+@given('the following wishlists')
 def step_impl(context):
     """ Delete all Wishlists and items, and load new ones """
     headers = {'Content-Type': 'application/json'}
@@ -57,7 +57,7 @@ def step_impl(context):
     create_url = context.base_url + '/wishlists'
     for row in context.table:
         data = {
-            "id": row['item_id']
+            "id": row['item_id'],
             "name": row['item_name'],
             "price": row['item_price'],
             "wishlist_id": row['item_wishlist_id']

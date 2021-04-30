@@ -1,16 +1,17 @@
-Feature: The pet store service back-end
+Feature: The wishlist service back-end
     As a customer
     I need a RESTful catalog service
     So that I can keep track of all my wishlists and items within
 
 Background:
     Given the following wishlists
-        | wishlist id | wishlist name | customer id |
-        |           1 | books         | 1           |
-        |           2 | food          | 1           |
-        |           3 | default       | 2           |
+        | wishlist id | wishlist name | 
+        |           1 | books         |
+        |           2 | food          | 
+        |           3 | default       | 
+    
     Given the following items
-        | item id | item wishlist id | item price      | item  name |  
+        | item id | item wishlist id | item price      | item name |  
         |       1 | 1                | 1               | cs        | 
         |       2 | 1                | 2               | math      | 
         |       3 | 3                | 1               | art       | 
@@ -27,7 +28,7 @@ Scenario: The server is running
 Scenario: Create a wishlist 
     When I visit the "Home Page"
     And I set the "Wishlist ID" to "test"
-    And I set the "Customer ID" to "1"
+    And I set the "Wishlist Items" to "1"
     And I press the "Create" button
     Then I should see the message "Success"
     
