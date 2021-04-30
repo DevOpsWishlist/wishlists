@@ -17,9 +17,11 @@ from service.routes import app, init_db
 from urllib.parse import quote_plus
 
 # DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
-DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
-)
+
+# DATABASE_URI = os.getenv(
+#     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
+# )
+from config import DATABASE_URI
 
 ######################################################################
 #  T E S T   C A S E S
