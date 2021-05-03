@@ -5,13 +5,13 @@ Feature: The wishlist service back-end
 
 Background:
     Given the following wishlists
-        | wishlist id | wishlist name | 
-        |           1 | books         |
-        |           2 | food          | 
-        |           3 | default       | 
-    
+        | wishlist_id | wishlist_name | wishlist_items | wishlist_category |
+        |           1 | books         | 1              | school            |
+        |           2 | food          | 1              | grocery           |
+        |           3 | default       | 2              | other             |
+      
     Given the following items
-        | item id | item wishlist id | item price      | item name |  
+        | item id | item wishlist id | item price      | item  name |  
         |       1 | 1                | 1               | cs        | 
         |       2 | 1                | 2               | math      | 
         |       3 | 3                | 1               | art       | 

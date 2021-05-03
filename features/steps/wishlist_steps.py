@@ -26,17 +26,19 @@ def step_impl(context):
     # list all of a wishlists and delete them one by one
     context.resp = requests.get(context.base_url + '/wishlists', headers=headers)
     expect(context.resp.status_code).to_equal(200)
-    #for wl in context.resp.json():
-      #  context.resp = requests.delete(context.base_url + '/wishlists/' + str(wl["_id"]), headers=headers)
-      #  expect(context.resp.status_code).to_equal(204)
+    for wl in context.resp.json():
+        print("wl_id")
+        context.resp = requests.delete(context.base_url + '/wishlists/' + str(wl["id"]), headers=headers)
+        expect(context.resp.status_code).to_equal(204)
     
     # load the database with new pets
     create_url = context.base_url + '/wishlists'
     for row in context.table:
         data = {
-            "name": row['name'],
-            "category": row['category'],
-            "items": row['items']
+            "wishlist_id": row['wishlist_id'],
+            "wishlist_name": row['wishlist_name'],
+            "wishlist_items": row['wishlist_items'],
+            "wishlist_category": row['wishlist_category']
             }
         payload = json.dumps(data)
         context.resp = requests.post(create_url, data=payload, headers=headers)
