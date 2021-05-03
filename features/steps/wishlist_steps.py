@@ -26,8 +26,8 @@ def step_impl(context):
     # list all of a wishlists and delete them one by one
     context.resp = requests.get(context.base_url + '/wishlists', headers=headers)
     expect(context.resp.status_code).to_equal(200)
-    for wl in context.resp.json():
-        print("wl_id")
+    json_data = context.resp.json()
+    for wl in json_data["data"]:
         context.resp = requests.delete(context.base_url + '/wishlists/' + str(wl["id"]), headers=headers)
         expect(context.resp.status_code).to_equal(204)
     
@@ -35,10 +35,10 @@ def step_impl(context):
     create_url = context.base_url + '/wishlists'
     for row in context.table:
         data = {
-            "wishlist_id": row['wishlist_id'],
-            "wishlist_name": row['wishlist_name'],
-            "wishlist_items": row['wishlist_items'],
-            "wishlist_category": row['wishlist_category']
+            "id": row['wishlist_id'],
+            "name": row['wishlist_name'],
+            "items": row['wishlist_items'],
+            "category": row['wishlist_category']
             }
         payload = json.dumps(data)
         context.resp = requests.post(create_url, data=payload, headers=headers)
@@ -47,22 +47,26 @@ def step_impl(context):
 @given('the following items')
 def step_impl(context):
     """ Delete all items, and load new ones """
+     
     headers = {'Content-Type': 'application/json'}
     # list all of a wishlists and delete them one by one
     context.resp = requests.get(context.base_url + '/wishlists', headers=headers)
     expect(context.resp.status_code).to_equal(200)
-    #for wl in context.resp.json():
-       # context.resp = requests.delete(context.base_url + '/wishlists/' + str(wl["_id"]), headers=headers)
-       # expect(context.resp.status_code).to_equal(204)
+    json_data = context.resp.json()
+    
+    for wl in json_data["data"]:
+        context.resp = requests.delete(context.base_url + '/wishlists/' + str(wl["id"]), headers=headers)
+        expect(context.resp.status_code).to_equal(204)
     
     # load the database with new items
-    create_url = context.base_url + '/wishlists'
+    
     for row in context.table:
+        create_url = context.base_url + '/wishlists/' + row["wishlist_id"] + "/items/"
         data = {
             "id": row['item_id'],
             "name": row['item_name'],
             "price": row['item_price'],
-            "wishlist_id": row['item_wishlist_id']
+            "wishlist_id": row['wishlist_id']
             }
         payload = json.dumps(data)
         context.resp = requests.post(create_url, data=payload, headers=headers)

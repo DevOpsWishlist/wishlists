@@ -11,15 +11,15 @@ Background:
         |           3 | default       | 2              | other             |
       
     Given the following items
-        | item id | item wishlist id | item price      | item  name |  
-        |       1 | 1                | 1               | cs        | 
-        |       2 | 1                | 2               | math      | 
-        |       3 | 3                | 1               | art       | 
-        |       4 | 2                | 3               | burger    | 
+        | item_id | wishlist_id | item_price      | item_name |  
+        |       1 | 1           | 1               | cs        | 
+        |       2 | 1           | 2               | math      | 
+        |       3 | 3           | 1               | art       | 
+        |       4 | 2           | 3               | burger    | 
 
 Scenario: The server is running
     When I visit the "Home Page"
-    Then I should see "wishlist RESTful Service" in the title
+    Then I should see "WISHLIST RESTful Service" in the title
     And I should not see "404 Not Found"
 
 ####################
