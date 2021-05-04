@@ -201,10 +201,10 @@ $(function () {
 
             $("#search_results").append('</table>');
 
-            // copy the first result to the form
-            // if (firstWl != "") {
-            //     update_form_data(firstWl)
-            // }
+            //copy the first result to the form
+            if (firstWl != "") {
+                update_form_data(firstWl)
+            }
 
             flash_message("Success")
         });

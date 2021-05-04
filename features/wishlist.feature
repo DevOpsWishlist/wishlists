@@ -5,20 +5,20 @@ Feature: The wishlist service back-end
 
 Background:
     Given the following wishlists
-        | wishlist_id | wishlist_name | wishlist_items | wishlist_category |
-        |           1 | books         | 1              | school            |
-        |           2 | food          | 1              | grocery           |
-        |           3 | default       | 2              | other             |
+        |  name | items | category |
+        |  books         | 1              | school            |
+        |  food          | 1              | grocery           |
+        |  default       | 2              | other             |
       
-    Given the following items
-        | item_id | wishlist_id | item_price      | item_name |  
-        |       1 | 1           | 1               | cs        | 
-        |       2 | 1           | 2               | math      | 
-        |       3 | 3           | 1               | art       | 
-        |       4 | 2           | 3               | burger    | 
+    # Given the following items
+    #     | item_id | wishlist_id | item_price      | item_name |  
+    #     |       1 | 1           | 1               | cs        | 
+    #     |       2 | 1           | 2               | math      | 
+    #     |       3 | 3           | 1               | art       | 
+    #     |       4 | 2           | 3               | burger    | 
 
 Scenario: The server is running
-    When I visit the "Home Page"
+    When I visit the "home page"
     Then I should see "WISHLIST RESTful Service" in the title
     And I should not see "404 Not Found"
 
@@ -26,9 +26,9 @@ Scenario: The server is running
 # CRUD WISHLISTS
 ####################
 Scenario: Create a wishlist 
-    When I visit the "Home Page"
-    And I set the "Wishlist ID" to "test"
-    And I set the "Wishlist Items" to "1"
+    When I visit the "home page"
+    #And I set the "Wishlist ID" to "test"
+    And I set the "Category" to "school"
     And I press the "Create" button
     Then I should see the message "Success"
     
@@ -42,18 +42,18 @@ Scenario: List all wishlist
 
 Scenario: Update a wishlist
     When I visit the "Home Page"
-    And I set the "Wishlist Name" to "books"
+    And I set the "Name" to "books"
     And I press the "Search" button
-    Then I should see "books" in the "Wishlist Name" field
-    And I should see "food" in the "Wishlist Name" field
-    When I change "Wishlist Name" to "clothes"
+    Then I should see "books" in the "Name" field
+    Then I should not see "food" in the results
+    When I change "Name" to "clothes"
     And I press the "Update" button
     Then I should see the message "Success"
-    When I copy the "Wishlist Id" field
+    When I copy the "Id" field
     And I press the "Clear" button
-    And I paste the "Wishlist Id" field
+    And I paste the "Id" field
     And I press the "Retrieve" button
-    Then I should see "clothes" in the "Wishlist Name" field
+    Then I should see "clothes" in the results
     When I press the "Clear" button
     And I press the "Search" button
     Then I should see "clothes" in the results
