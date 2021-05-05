@@ -6,7 +6,8 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#wl_id").val(res._id); //not sure if this is working 
+        $("#wl_id").val(res.id);
+        console.log(res)  //not sure if this is working 
         $("#wl_name").val(res.name);
         $("#wl_category").val(res.category);
     }
@@ -15,6 +16,7 @@ $(function () {
     function clear_form_data() {
         $("#wl_name").val("");
         $("#wl_category").val("");
+        $("#wl_id").val("");
     }
 
     // Updates the flash message area
@@ -163,29 +165,6 @@ $(function () {
        //  var id = $("#wl_id").val();
 
         var queryString = ""
-
-        // var data = {
-        //     "name" : name,
-        //     "category" : category
-        // }
-
-        // console.log(data)
-
-        // var ajax = $.ajax({
-        //     type: "PUT",
-        //     url: "/wishlists/" + id,
-        //     contentType: "application/json",
-        //     data: JSON.stringify(data)
-        // })
-        
-        // ajax.done(function(res){
-        //     update_form_data(res)
-        //     flash_message("Success")
-        // })
-
-        // ajax.fail(function(res){
-        //     flash_message(res.responseJSON.message)
-        // })
 
         if (name) {
             queryString += 'name=' + name

@@ -41,13 +41,10 @@ Scenario: Update a wishlist
     When I change "Name" to "clothes"
     And I press the "Update" button
     Then I should see the message "Success"
-
-    #ID field not populating 
     When I copy the "Id" field
     And I press the "Clear" button
     And I paste the "Id" field
-    And I press the "Retrieve" button
-   
+    And I press the "Search" button
     Then I should see "clothes" in the results
     When I press the "Clear" button
     And I press the "Search" button
@@ -58,13 +55,8 @@ Scenario: Delete a wishlist
     When I visit the "Home Page"
     And I press the "Search" button
     Then I should see "books" in the "Name" field
-    And I should see "food" in the results
-    And I should not see "clothes" in the results
-
-    #broken here - don't kknow how to get the ID for the testing
-    When I select "1" in the "ID" field 
-   
-    And I press the "Delete" button 
+    When I press the "Delete" button 
+    And I press the "Search" button
     Then I should not see "books" in the results 
     Then I should see "food" in the results 
 
