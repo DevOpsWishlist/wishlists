@@ -35,7 +35,6 @@ def step_impl(context):
     create_url = context.base_url + '/wishlists'
     for row in context.table:
         data = {
-            #"id": row['wishlist_id'],
             "name": row['name'],
             "items": row['items'],
             "category": row['category']
@@ -43,34 +42,6 @@ def step_impl(context):
         payload = json.dumps(data)
         context.resp = requests.post(create_url, data=payload, headers=headers)
         expect(context.resp.status_code).to_equal(201)
-
-# @given('the following items')
-# def step_impl(context):
-#     """ Delete all items, and load new ones """
-     
-#     headers = {'Content-Type': 'application/json'}
-#     # list all of a wishlists and delete them one by one
-#     context.resp = requests.get(context.base_url + '/wishlists', headers=headers)
-#     expect(context.resp.status_code).to_equal(200)
-#     json_data = context.resp.json()
-    
-#     for wl in json_data["data"]:
-#         context.resp = requests.delete(context.base_url + '/wishlists/' + str(wl["id"]), headers=headers)
-#         expect(context.resp.status_code).to_equal(204)
-    
-#     # load the database with new items
-    
-#     for row in context.table:
-#         create_url = context.base_url + '/wishlists/' + row["wishlist_id"] + "/items/"
-#         data = {
-#             "id": row['item_id'],
-#             "name": row['item_name'],
-#             "price": row['item_price'],
-#             "wishlist_id": row['wishlist_id']
-#             }
-#         payload = json.dumps(data)
-#         context.resp = requests.post(create_url, data=payload, headers=headers)
-#         expect(context.resp.status_code).to_equal(201)
 
 @when('I visit the "home page"')
 def step_impl(context):
@@ -94,7 +65,6 @@ def step_impl(context, message):
 @when('I set the "{element_name}" to "{text_string}"')
 def step_impl(context, element_name, text_string):
     element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
-    print(element_id)
     element = context.driver.find_element_by_id(element_id)
     element.clear()
     element.send_keys(text_string)
@@ -124,8 +94,6 @@ def step_impl(context, element_name):
 def step_impl(context, element_name):
     element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
     element = context.driver.find_element_by_id(element_id)
-    print(element_id)
-    print("copy function ^")
     element = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
         expected_conditions.presence_of_element_located((By.ID, element_id))
     )
@@ -142,7 +110,7 @@ def step_impl(context, element_name):
     )
     print(context.clipboard)
     element.clear()
-    element.send_keys("clothes")
+    element.send_keys(context.clipboard)
 
 
 ##################################################################

@@ -6,7 +6,7 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#wl_id").val(res._id);
+        $("#wl_id").val(res._id); //not sure if this is working 
         $("#wl_name").val(res.name);
         $("#wl_category").val(res.category);
     }
@@ -160,8 +160,32 @@ $(function () {
 
         var name = $("#wl_name").val();
         var category = $("#wl_category").val();
+       //  var id = $("#wl_id").val();
 
         var queryString = ""
+
+        // var data = {
+        //     "name" : name,
+        //     "category" : category
+        // }
+
+        // console.log(data)
+
+        // var ajax = $.ajax({
+        //     type: "PUT",
+        //     url: "/wishlists/" + id,
+        //     contentType: "application/json",
+        //     data: JSON.stringify(data)
+        // })
+        
+        // ajax.done(function(res){
+        //     update_form_data(res)
+        //     flash_message("Success")
+        // })
+
+        // ajax.fail(function(res){
+        //     flash_message(res.responseJSON.message)
+        // })
 
         if (name) {
             queryString += 'name=' + name
@@ -180,6 +204,7 @@ $(function () {
             contentType: "application/json",
             data: ''
         })
+
 
         ajax.done(function(res){
             $("#search_results").empty();
