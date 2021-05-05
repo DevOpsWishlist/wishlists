@@ -6,8 +6,7 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#wl_id").val(res.id);
-        console.log(res)  //not sure if this is working 
+        $("#wl_id").val(res.id);  
         $("#wl_name").val(res.name);
         $("#wl_category").val(res.category);
     }
@@ -45,10 +44,10 @@ $(function () {
             contentType: "application/json",
             data: JSON.stringify(data),
         });
-        console.log('hey');
+      
 
         ajax.done(function(res){
-            console.log(res);
+
             update_form_data(res)
             flash_message("Success")
         });
@@ -162,7 +161,7 @@ $(function () {
 
         var name = $("#wl_name").val();
         var category = $("#wl_category").val();
-       //  var id = $("#wl_id").val();
+        var id = $("#wl_id").val();
 
         var queryString = ""
 
