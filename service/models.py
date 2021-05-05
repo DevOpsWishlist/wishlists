@@ -166,7 +166,7 @@ class WishList(db.Model, CommonModel):
     category = db.Column(db.String(63))
     created_time = db.Column(db.DateTime, server_default=db.func.now())
     modified_time = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
-    items = db.relationship("Item", backref="wish_list", lazy='dynamic', cascade="all, delete-orphan")
+    items = db.relationship("Item", backref="wish_list", lazy='dynamic')
 
     def __repr__(self):
         return f'WishList {self.name} id =[{self.id}]'
