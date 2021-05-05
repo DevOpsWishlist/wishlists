@@ -8,14 +8,19 @@ services:
 env:
   - DATABASE_URI=postgres://postgres:@localhost:5432/testdb
 
+cache: pip 
+
+#command to install dependencies 
+
+install:
+  - pip install -r requirements.txt
+  
 before_script:
   - psql -c 'create database testdb;' -U postgres
 
-# command to install dependencies
-install: "pip3 install -r requirements.txt"
-
 # command to run tests
 script: nosetests
+
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

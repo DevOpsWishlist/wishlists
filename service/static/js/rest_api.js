@@ -6,7 +6,7 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#wl_id").val(res._id);
+        $("#wl_id").val(res.id);  
         $("#wl_name").val(res.name);
         $("#wl_category").val(res.category);
     }
@@ -15,6 +15,7 @@ $(function () {
     function clear_form_data() {
         $("#wl_name").val("");
         $("#wl_category").val("");
+        $("#wl_id").val("");
     }
 
     // Updates the flash message area
@@ -43,10 +44,10 @@ $(function () {
             contentType: "application/json",
             data: JSON.stringify(data),
         });
-        console.log('hey');
+      
 
         ajax.done(function(res){
-            console.log(res);
+
             update_form_data(res)
             flash_message("Success")
         });
@@ -160,6 +161,7 @@ $(function () {
 
         var name = $("#wl_name").val();
         var category = $("#wl_category").val();
+        var id = $("#wl_id").val();
 
         var queryString = ""
 
@@ -181,6 +183,7 @@ $(function () {
             data: ''
         })
 
+
         ajax.done(function(res){
             $("#search_results").empty();
             $("#search_results").append('<table class="table-striped" cellpadding="10">');
@@ -201,10 +204,10 @@ $(function () {
 
             $("#search_results").append('</table>');
 
-            // copy the first result to the form
-            // if (firstWl != "") {
-            //     update_form_data(firstWl)
-            // }
+            //copy the first result to the form
+            if (firstWl != "") {
+                update_form_data(firstWl)
+            }
 
             flash_message("Success")
         });
